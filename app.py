@@ -7,13 +7,17 @@ def index():
 
 @app.route('/search/')
 @app.route('/search/<reference>/<flag>')
-def search(reference='', flag=False):
+def search(reference='', flag='false'):
+	if flag == 'true':
+		flag = True
+	else:
+		flag = False
 	if reference:
 		reference, passage = find_passage(reference, flag)
 	else:
 		return render_template('index.html')
 	if passage:
-		return show_passage(reference, passage)
+		return show_passage(reference, passage, flag)
 	else:
 		return render_template('index.html', error='Cannot find passage')
 
@@ -137,12 +141,16 @@ def submit(reference='', note=''):
 			f0.write(note)
 	return redirect('/search/' + reference)
 
-def show_passage(reference, passage):
-	return render_template('index.html', reference=reference, passage=passage)
+def show_passage(reference, passage, flag=False):
+	if flag:
+		number = 'Hide Verse Number'
+	else:
+		number = 'Show Verse Number'
+	return render_template('index.html', reference=reference, passage=passage, number=number)
 
 def find_passage(reference, flag=False):
 	try:
-		book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)	
+		book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)
 		passage = ''
 		if book2:
 			if book1 == book2:
@@ -163,6 +171,10 @@ def fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2):
 		book2 = None
 	if not book2 and chapter1 == chapter2:
 		chapter2 = None
+	if book1 == 'Psalm' and not chapter1:
+		book1 = 'Psalms'
+	if book2 == 'Psalm' and not chapter2:
+		book2 = 'Psalms'
 	result = book1
 	if chapter1:
 		result += ' ' + chapter1
@@ -179,14 +191,11 @@ def fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2):
 	if verse2:
 		if chapter2:
 			result += ':'
-		result += verse2
+		result += verse2	
 	return result
 
 def get_book(book, chapter1=None, verse1=None, chapter2=None, verse2=None, flag=False):
-	if flag:
-		passage = book + '\n\n'
-	else:
-		passage = ''
+	passage = ''
 	if chapter1 == None:
 		chapter1 = '1'
 	if chapter2 == None and verse2:
@@ -194,9 +203,9 @@ def get_book(book, chapter1=None, verse1=None, chapter2=None, verse2=None, flag=
 	elif chapter2 == None:
 		chapter2 = max(data[book], key=lambda c: int(c))
 	if chapter1 == chapter2:
-		passage = get_chapter(book, chapter1, verse1, verse2, flag=flag)
+		passage += get_chapter(book, chapter1, verse1, verse2, flag=flag)
 	else:
-		passage = get_chapter(book, chapter1, start=verse1, flag=flag)
+		passage += get_chapter(book, chapter1, start=verse1, flag=flag)
 		for chapter in range(int(chapter1) + 1, int(chapter2)):
 			passage += get_chapter(book, str(chapter), flag=flag)
 		passage += get_chapter(book, chapter2, end=verse2, flag=flag)
@@ -247,6 +256,8 @@ def fix_name(book):
 			book_name[i+1] = book_name[:i+1] + book_name[i+1].lower() + book_name[i+2:]
 	if m.group('number'):
 		return m.group('number') + ' ' + book_name
+	elif book_name == 'Psalms':
+		return 'Psalm'
 	else:
 		return book_name
 

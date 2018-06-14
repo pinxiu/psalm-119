@@ -1,5 +1,4 @@
-1. enable show verse number
-2. fix url for search/submit
+1. fix url for search/submit
 3. fix textarea size
 4. fix navbar Reading direct link
 5. navbar fixed on top
@@ -8,5 +7,5 @@
 8. enable delete notes
 9. implement progress
 10.implement new lines in reading
-11.smart search (e.g. psalm 32)
-12.note column independent from passage (scroll down)
+11.smart search (e.g. 2 tim 2:1)
+12.note column independent from passage (scroll down, maintain content while others change)

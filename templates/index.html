@@ -29,7 +29,7 @@
   <div class='column'>
 
     {% if reference %}
-      <p>{{reference}}</p>
+      <p>{{reference}} <input id="number" type="button" onclick="change('{{reference}}')" value='{{number}}'></p>
     {% endif %}
   	{% if passage %}
   	  <p class='passage'>{{passage}}</p>

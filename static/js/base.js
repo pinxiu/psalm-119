@@ -1,6 +1,10 @@
 function search() {
     var reference = document.getElementById('reference').value;
-    location.href = window.location.origin + "/search/" + reference;
+    var number = document.getElementById('number');
+    if (number == null || number.value == 'Show Verse Number')
+    	location.href = window.location.origin + "/search/" + reference + '/false';
+    else
+    	location.href = window.location.origin + "/search/" + reference + '/true';
 }
 function submit(reference) {
     var note = document.getElementById('note').value;
@@ -10,4 +14,13 @@ function submit(reference) {
 function check(reference) {
     if (reference)
 	    location.href = window.location.origin + "/check/" + reference;
+}
+function change(reference) {
+	if (document.getElementById('number').value == 'Show Verse Number') {
+		document.getElementById('number').value = 'Hide Verse Number';
+		location.href = window.location.origin + "/search/" + reference + '/true';
+	} else {
+		document.getElementById('number').value = 'Show Verse Number';
+		location.href = window.location.origin + "/search/" + reference + '/false';
+	}
 }

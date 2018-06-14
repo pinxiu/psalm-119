@@ -76,6 +76,17 @@ input[type=button], input[type=submit], input[type=reset] {
   margin: 4px 2px;
   cursor: pointer;
 }
+#number {
+  background-color: white;
+  border: none;
+  color: #4CAF50;
+  padding: 0px 0px;
+  font-size: 12px;
+  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
+  text-decoration: none;
+  margin: 0px 0px 0px 0px
+}
 h1, h2, h3, h4 {
   font-family: 'Source Sans Pro', sans-serif;
 }
