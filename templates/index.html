@@ -1,0 +1,45 @@
+<!doctype html>
+<head>
+<title>Read God's Word</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+<body>
+
+<div>
+  Passage: <input type="text" id="reference"><input type="button" onclick="search()" value="Search">
+
+</div>
+
+<div class='row'>
+
+  {% if reference %}
+
+  <div class='column'>
+
+    {% if reference %}
+      <p>{{reference}}</p>
+    {% endif %}
+  	{% if passage %}
+  	  <p>{{passage}}</p>
+  	{% endif %}
+  	{% if error %}
+  	  <p>{{error}}</p>
+  	{% endif %}
+
+  </div>
+
+  <div class='column'>
+    <textarea id="note" cols="50" rows="5"></textarea>
+    <input type="button" onclick="submit('{{reference}}')" value="Submit">
+  </div>
+
+  {% endif %}
+
+</div>
+
+<script src="{{ url_for('static',filename='js/base.js') }}"></script>
+
+</body>
+</html>
