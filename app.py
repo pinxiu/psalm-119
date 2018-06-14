@@ -131,7 +131,8 @@ def get_chapter(book, chapter, start=None, end=None):
 
 def get_verse(book, chapter, verse):
 	result = data[book][chapter][verse]
-	return re.subn('(?P<prefix>\w[^\w\s])(?P<suffix>\w)', '\g<prefix> \g<suffix>', result)[0] + '\n'
+	result = re.subn('(?P<prefix>\w[^\w\s])(?P<suffix>\w)', '\g<prefix> \g<suffix>', result)[0] + '\n'
+	return re.subn("' s", "'s", result)[0]
 
 def parse(reference):
 	m = re.match('^\s*(?P<book1>[1-3]?\s*[a-zA-Z]+)\s*(?P<chapter1>[0-9]+)?\s*:?\s*(?P<verse1>[0-9]+)?\s*(-?\s*(?P<book2>[1-3]?\s*[a-zA-Z]+)?\s*((?P<chapter2>[0-9]+)\s*:)?\s*(?P<verse2>[0-9]+)?)?', reference)
