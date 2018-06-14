@@ -17,12 +17,29 @@ def search(reference=''):
 	else:
 		return render_template('index.html', error='Cannot find passage')
 
+@app.route('/notes/')
+def notes():
+	return render_template('notes.html', notes=get_notes())
+
+import os
+from os import listdir
+
+def get_notes():
+	notes = ''
+	for file_name in os.listdir('notes'):
+		if file_name[0] == '.':
+			continue
+		with open('notes/' + file_name) as temp:
+			notes += temp.read() + '\n\n'
+	return notes
+
 import datetime
 
 @app.route('/submit/')
 @app.route('/submit/<reference>/<note>')
 def submit(reference='', note=''):
 	if reference and note:
+		note = reference + '\n' + note
 		with open('notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', 'w') as f0:
 			f0.write(note)
 	return redirect('/search/' + reference)

@@ -7,12 +7,22 @@
 </head>
 <body>
 
+<div class="topnav">
+  <a class="active" href="/">Reading</a>
+  <a href="/notes">Notes</a>
+  <a href="/progress">Progress</a>
+</div>
+
 <div>
   Passage: <input type="text" id="reference"><input type="button" onclick="search()" value="Search">
 
 </div>
 
 <div class='row'>
+
+  {% if error %}
+    <p>{{error}}</p>
+  {% endif %}
 
   {% if reference %}
 
@@ -23,9 +33,6 @@
     {% endif %}
   	{% if passage %}
   	  <p>{{passage}}</p>
-  	{% endif %}
-  	{% if error %}
-  	  <p>{{error}}</p>
   	{% endif %}
 
   </div>

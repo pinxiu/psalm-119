@@ -4,5 +4,6 @@ function search() {
 }
 function submit(reference) {
     var note = document.getElementById('note').value;
-    location.href = window.location.origin + "/submit/" + reference + '/' + note;
+    if (reference && note)
+	    location.href = window.location.origin + "/submit/" + reference + '/' + note;
 }

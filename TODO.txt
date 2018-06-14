@@ -1,0 +1,9 @@
+1. enable show verse number
+2. fix url for search/submit
+3. fix textarea size
+4. fix navbar Reading direct link
+5. navbar fixed on top
+6. handle wrong url (invalid input)
+7. enable search notes, group by reference
+8. enable delete notes
+9. implement progress
