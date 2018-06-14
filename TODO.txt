@@ -7,3 +7,4 @@
 7. enable search notes, group by reference
 8. enable delete notes
 9. implement progress
+10.implement new lines in reading
