@@ -53,7 +53,7 @@ def display(status):
 		# read += b_read
 		# total += b_total
 		# result += book_status
-		# result += '\n\n'
+		result += '\n\n'
 	return 'Total: ' + "%.2f%%" % (100 * read / total) + '\n\n\n' + result
 
 def get_progress():
