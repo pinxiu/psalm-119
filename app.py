@@ -39,13 +39,13 @@ def display_progress():
 
 def display(status):
 	result = ''
-	read, total = 0, 1
+	read, total = 0, 0
 	for book in sorted(status, key=lambda b: int(order[b])):
 		book_status = ''
-		b_read, b_total = 0, 1
+		b_read, b_total = 0, 0
 		for chapter in sorted(status[book], key=lambda c: int(c)):
 			c_read = 1#status[book][chapter].values().count('true')
-			c_total = 1#len(status[book][chapter])
+			c_total = len(status[book][chapter])
 			b_read += c_read
 			b_total += c_total
 			book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
