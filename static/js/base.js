@@ -8,8 +8,13 @@ function search() {
 }
 function submit(reference) {
     var note = document.getElementById('note').value;
+    var flag;
+    if (number == null || number.value == 'Show Verse Number')
+    	flag = 'false';
+   	else
+   		flag = 'true';
     if (reference && note)
-	    location.href = window.location.origin + "/submit/" + reference + '/' + note;
+	    location.href = window.location.origin + "/submit/" + reference + '/' + note + '/' + flag;
 }
 function check(reference) {
     if (reference)

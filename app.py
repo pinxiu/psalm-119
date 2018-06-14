@@ -6,6 +6,7 @@ def index():
 	return render_template('index.html')
 
 @app.route('/search/')
+@app.route('/search/<reference>')
 @app.route('/search/<reference>/<flag>')
 def search(reference='', flag='false'):
 	if flag == 'true':
@@ -134,12 +135,13 @@ import datetime
 
 @app.route('/submit/')
 @app.route('/submit/<reference>/<note>')
-def submit(reference='', note=''):
+@app.route('/submit/<reference>/<note>/<flag>')
+def submit(reference='', note='', flag=False):
 	if reference and note:
 		note = reference + '\n' + note
 		with open('notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', 'w') as f0:
 			f0.write(note)
-	return redirect('/search/' + reference)
+	return redirect('/search/' + reference + '/' + flag)
 
 def show_passage(reference, passage, flag=False):
 	if flag:
