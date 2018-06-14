@@ -7,3 +7,7 @@ function submit(reference) {
     if (reference && note)
 	    location.href = window.location.origin + "/submit/" + reference + '/' + note;
 }
+function check(reference) {
+    if (reference)
+	    location.href = window.location.origin + "/check/" + reference;
+}

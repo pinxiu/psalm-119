@@ -32,8 +32,9 @@
       <p>{{reference}}</p>
     {% endif %}
   	{% if passage %}
-  	  <p>{{passage}}</p>
+  	  <p class='passage'>{{passage}}</p>
   	{% endif %}
+    <input type="button" onclick="check('{{reference}}')" value="Finished Reading">
 
   </div>
 

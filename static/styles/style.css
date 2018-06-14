@@ -11,6 +11,12 @@ body {
 .notes {
   white-space: pre-line;
 }
+.passage {
+  white-space: pre-line;
+}
+.progress {
+  white-space: pre-line;
+}
 .column {
   float: left;
   width: 40%;

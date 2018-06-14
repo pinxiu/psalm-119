@@ -17,6 +17,50 @@ def search(reference=''):
 	else:
 		return render_template('index.html', error='Cannot find passage')
 
+@app.route('/progress/')
+def progress():
+	return render_template('progress.html', progress=display_progress())
+
+import json
+import re
+
+with open('ESV.json') as f1:
+	data = json.load(f1)
+
+with open('order.json') as f2:
+	order = json.load(f2)
+
+with open('index.json') as f3:
+	book_index = json.load(f3)
+
+def display_progress():
+	status = get_progress()
+	return display(status)
+
+def display(status):
+	result = ''
+	read, total = 0, 0
+	for book in sorted(status, key=lambda b: int(order[b])):
+		book_status = ''
+		b_read, b_total = 0, 0
+		for chapter in sorted(status[book], key=lambda c: int(c)):
+			c_read = status[book][chapter].values().count('true')
+			c_total = len(status[book][chapter])
+			b_read += c_read
+			b_total += c_total
+			book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
+		book_status = book + ': ' + "%.2f%%" % (100 * b_read / b_total) + '\n' + book_status
+		read += b_read
+		total += b_total
+		result += book_status
+		result += '\n\n'
+	return 'Total: ' + "%.2f%%" % (100 * read / total) + '\n\n\n' + result
+
+def get_progress():
+	with open('status.json') as s:
+		status = json.load(s)
+	return status
+
 @app.route('/notes/')
 def notes():
 	return render_template('notes.html', notes=get_notes())
@@ -33,6 +77,55 @@ def get_notes():
 			notes += temp.read() + '\n\n'
 	return notes
 
+@app.route('/check/')
+@app.route('/check/<reference>')
+def check(reference=''):
+	status = get_progress()
+	if reference:
+		book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)
+		if book2:
+			if book1 == book2:
+				check_book(status, book1, chapter1, verse1, chapter2, verse2)
+			else:
+				check_book(status, book1, chapter1=chapter1, verse1=verse1)
+				for i in range(int(order[book1]) + 1, int(order[book2])):
+					check_book(status, book_index[str(i)])
+				check_book(status, book2, chapter2=chapter2, verse2=verse2)
+		else:
+			check_book(status, book1, chapter1, verse1, chapter1, verse1)
+	with open('status.json', 'w') as o:
+		o.write(json.dumps(status))
+	return redirect('/')
+
+def check_book(status, book, chapter1=None, verse1=None, chapter2=None, verse2=None):
+	if chapter1 == None:
+		chapter1 = '1'
+	if chapter2 == None and verse2:
+		chapter2 = chapter1
+	elif chapter2 == None:
+		chapter2 = max(data[book], key=lambda c: int(c))
+	if chapter1 == chapter2:
+		check_chapter(status, book, chapter1, verse1, verse2)
+	else:
+		check_chapter(status, book, chapter1, start=verse1)
+		for chapter in range(int(chapter1) + 1, int(chapter2)):
+			check_chapter(status, book, str(chapter))
+		check_chapter(status, book, chapter2, end=verse2)
+	return status
+
+def check_chapter(status, book, chapter, start=None, end=None):
+	if not start:
+		start = '1'
+	if not end:
+		end = max(data[book][chapter], key=lambda v: int(v))
+	for verse in range(int(start), int(end) + 1):
+		check_verse(status, book, chapter, str(verse))
+	return status
+
+def check_verse(status, book, chapter, verse):
+	status[book][chapter][verse] = 'true'
+	return status
+
 import datetime
 
 @app.route('/submit/')
@@ -46,18 +139,6 @@ def submit(reference='', note=''):
 
 def show_passage(reference, passage):
 	return render_template('index.html', reference=reference, passage=passage)
-
-import json
-import re
-
-with open('ESV.json') as f1:
-	data = json.load(f1)
-
-with open('order.json') as f2:
-	order = json.load(f2)
-
-with open('index.json') as f3:
-	book_index = json.load(f3)
 
 def find_passage(reference):
 	try:
@@ -113,11 +194,10 @@ def get_book(book, chapter1=None, verse1=None, chapter2=None, verse2=None):
 		passage = get_chapter(book, chapter1, verse1, verse2)
 	else:
 		passage = get_chapter(book, chapter1, start=verse1)
-		print(chapter1, chapter2)
 		for chapter in range(int(chapter1) + 1, int(chapter2)):
 			passage += get_chapter(book, str(chapter))
 		passage += get_chapter(book, chapter2, end=verse2)
-	return passage
+	return passage + '\n'
 
 def get_chapter(book, chapter, start=None, end=None):
 	passage = ''
@@ -127,7 +207,7 @@ def get_chapter(book, chapter, start=None, end=None):
 		end = max(data[book][chapter], key=lambda v: int(v))
 	for verse in range(int(start), int(end) + 1):
 		passage += get_verse(book, chapter, str(verse))
-	return passage
+	return passage + '\n'
 
 def get_verse(book, chapter, verse):
 	result = data[book][chapter][verse]
