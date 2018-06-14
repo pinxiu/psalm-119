@@ -8,3 +8,5 @@
 8. enable delete notes
 9. implement progress
 10.implement new lines in reading
+11.smart search (e.g. psalm 32)
+12.note column independent from passage (scroll down)

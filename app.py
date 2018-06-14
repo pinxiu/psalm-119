@@ -6,10 +6,10 @@ def index():
 	return render_template('index.html')
 
 @app.route('/search/')
-@app.route('/search/<reference>')
-def search(reference=''):
+@app.route('/search/<reference>/<flag>')
+def search(reference='', flag=False):
 	if reference:
-		reference, passage = find_passage(reference)
+		reference, passage = find_passage(reference, flag)
 	else:
 		return render_template('index.html')
 	if passage:
@@ -140,20 +140,20 @@ def submit(reference='', note=''):
 def show_passage(reference, passage):
 	return render_template('index.html', reference=reference, passage=passage)
 
-def find_passage(reference):
+def find_passage(reference, flag=False):
 	try:
 		book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)	
 		passage = ''
 		if book2:
 			if book1 == book2:
-				passage = get_book(book1, chapter1, verse1, chapter2, verse2)
+				passage = get_book(book1, chapter1, verse1, chapter2, verse2, flag=flag)
 			else:
-				passage = get_book(book1, chapter1=chapter1, verse1=verse1)
+				passage = get_book(book1, chapter1=chapter1, verse1=verse1, flag=flag)
 				for i in range(int(order[book1]) + 1, int(order[book2])):
-					passage += get_book(book_index[str(i)])
-				passage += get_book(book2, chapter2=chapter2, verse2=verse2)
+					passage += get_book(book_index[str(i)], flag=flag)
+				passage += get_book(book2, chapter2=chapter2, verse2=verse2, flag=flag)
 		else:
-			passage = get_book(book1, chapter1, verse1, chapter1, verse1)
+			passage = get_book(book1, chapter1, verse1, chapter1, verse1, flag=flag)
 		return fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2), passage
 	except KeyError:
 		return None, None
@@ -182,8 +182,11 @@ def fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2):
 		result += verse2
 	return result
 
-def get_book(book, chapter1=None, verse1=None, chapter2=None, verse2=None):
-	passage = ''
+def get_book(book, chapter1=None, verse1=None, chapter2=None, verse2=None, flag=False):
+	if flag:
+		passage = book + '\n\n'
+	else:
+		passage = ''
 	if chapter1 == None:
 		chapter1 = '1'
 	if chapter2 == None and verse2:
@@ -191,26 +194,33 @@ def get_book(book, chapter1=None, verse1=None, chapter2=None, verse2=None):
 	elif chapter2 == None:
 		chapter2 = max(data[book], key=lambda c: int(c))
 	if chapter1 == chapter2:
-		passage = get_chapter(book, chapter1, verse1, verse2)
+		passage = get_chapter(book, chapter1, verse1, verse2, flag=flag)
 	else:
-		passage = get_chapter(book, chapter1, start=verse1)
+		passage = get_chapter(book, chapter1, start=verse1, flag=flag)
 		for chapter in range(int(chapter1) + 1, int(chapter2)):
-			passage += get_chapter(book, str(chapter))
-		passage += get_chapter(book, chapter2, end=verse2)
+			passage += get_chapter(book, str(chapter), flag=flag)
+		passage += get_chapter(book, chapter2, end=verse2, flag=flag)
 	return passage + '\n'
 
-def get_chapter(book, chapter, start=None, end=None):
-	passage = ''
+def get_chapter(book, chapter, start=None, end=None, flag=False):
+	if flag:
+		passage = book + ' ' + chapter + '\n\n'
+	else:
+		passage = ''
 	if not start:
 		start = '1'
 	if not end:
 		end = max(data[book][chapter], key=lambda v: int(v))
 	for verse in range(int(start), int(end) + 1):
-		passage += get_verse(book, chapter, str(verse))
+		passage += get_verse(book, chapter, str(verse), flag=flag)
 	return passage + '\n'
 
-def get_verse(book, chapter, verse):
-	result = data[book][chapter][verse]
+def get_verse(book, chapter, verse, flag=False):
+	if flag:
+		result = verse + ' '
+	else:
+		result = ''
+	result += data[book][chapter][verse]
 	result = re.subn('(?P<prefix>\w[^\w\s-])(?P<suffix>\w)', '\g<prefix> \g<suffix>', result)[0] + '\n'
 	return re.subn("' s", "'s", result)[0]
 
