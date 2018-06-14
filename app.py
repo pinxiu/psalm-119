@@ -38,24 +38,23 @@ def display_progress():
 	return display(status)
 
 def display(status):
-	return 'good'
-	# result = ''
-	# read, total = 0, 0
-	# for book in sorted(status, key=lambda b: int(order[b])):
-	# 	book_status = ''
-	# 	b_read, b_total = 0, 0
-	# 	for chapter in sorted(status[book], key=lambda c: int(c)):
-	# 		c_read = status[book][chapter].values().count('true')
-	# 		c_total = len(status[book][chapter])
-	# 		b_read += c_read
-	# 		b_total += c_total
-	# 		book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
-	# 	book_status = book + ': ' + "%.2f%%" % (100 * b_read / b_total) + '\n' + book_status
-	# 	read += b_read
-	# 	total += b_total
-	# 	result += book_status
-	# 	result += '\n\n'
-	# return 'Total: ' + "%.2f%%" % (100 * read / total) + '\n\n\n' + result
+	result = ''
+	read, total = 0, 1
+	for book in sorted(status, key=lambda b: int(order[b])):
+		# book_status = ''
+		# b_read, b_total = 0, 0
+		# for chapter in sorted(status[book], key=lambda c: int(c)):
+		# 	c_read = status[book][chapter].values().count('true')
+		# 	c_total = len(status[book][chapter])
+		# 	b_read += c_read
+		# 	b_total += c_total
+		# 	book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
+		# book_status = book + ': ' + "%.2f%%" % (100 * b_read / b_total) + '\n' + book_status
+		# read += b_read
+		# total += b_total
+		# result += book_status
+		# result += '\n\n'
+	return 'Total: ' + "%.2f%%" % (100 * read / total) + '\n\n\n' + result
 
 def get_progress():
 	with open('status.json') as s:
