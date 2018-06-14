@@ -44,8 +44,8 @@ def display(status):
 		book_status = ''
 		b_read, b_total = 0, 1
 		for chapter in sorted(status[book], key=lambda c: int(c)):
-			c_read = status[book][chapter].values().count('true')
-			c_total = len(status[book][chapter])
+			c_read = 1#status[book][chapter].values().count('true')
+			c_total = 1#len(status[book][chapter])
 			b_read += c_read
 			b_total += c_total
 			book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
