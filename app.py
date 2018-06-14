@@ -44,7 +44,7 @@ def display(status):
 		book_status = ''
 		b_read, b_total = 0, 0
 		for chapter in sorted(status[book], key=lambda c: int(c)):
-			c_read = 1#status[book][chapter].values().count('true')
+			c_read = sum([1 for v in status[book][chapter].values() if v == 'true'])
 			c_total = len(status[book][chapter])
 			b_read += c_read
 			b_total += c_total
