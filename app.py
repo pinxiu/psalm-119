@@ -54,6 +54,8 @@ def display(status):
 			b_read += c_read
 			b_total += c_total
 			book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
+		if book == 'Psalm':
+			book = 'Psalms'
 		book_status = book + ': ' + "%.2f%%" % (100 * b_read / b_total) + '\n' + book_status
 		read += b_read
 		total += b_total
