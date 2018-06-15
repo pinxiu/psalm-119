@@ -24,7 +24,7 @@ def search(reference='', flag='false'):
 
 @app.route('/progress/')
 def progress():
-	return render_template('progress.html', progress=display_progress())
+	return display_progress()
 
 import json
 import re
@@ -40,28 +40,88 @@ with open('index.json') as f3:
 
 def display_progress():
 	status = get_progress()
-	return display(status)
+	html_str = """
+				<!doctype html>
+				<head>
+				<title>Read God's Word</title>
+				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+				<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+				<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+				</head>
+				<body>
+
+				<div class="topnav">
+				  <a href="/">Reading</a>
+				  <a href="/notes">Notes</a>
+				  <a class="active" href="/progress">Progress</a>
+				</div>
+
+				<div>
+				"""
+				
+	html_str += display(status)
+	html_str += """
+				</div>
+				</body>
+				</html>
+				"""
+	with open('templates/progress.html', 'w') as p:
+		p.write(html_str)
+	return render_template('progress.html')
 
 def display(status):
 	result = ''
 	read, total = 0, 0
 	for book in sorted(status, key=lambda b: int(order[b])):
-		book_status = ''
+		book_status = '<div class="grid-container">'
 		b_read, b_total = 0, 0
 		for chapter in sorted(status[book], key=lambda c: int(c)):
 			c_read = sum([1 for v in status[book][chapter].values() if v == 'true'])
 			c_total = len(status[book][chapter])
 			b_read += c_read
 			b_total += c_total
-			book_status += chapter + ': ' + "%.2f%%" % (100 * c_read / c_total) + ' | '
+			book_status += create_label(chapter + ': ', "%.2f%%" % (100 * c_read / c_total))
 		if book == 'Psalm':
 			book = 'Psalms'
-		book_status = book + ': ' + "%.2f%%" % (100 * b_read / b_total) + '\n' + book_status
+		book_status = create_bar(book + ': ', "%.2f%%" % (100 * b_read / b_total)) + book_status + '</div>'
 		read += b_read
 		total += b_total
 		result += book_status
 		result += '\n\n'
-	return 'Total: ' + "%.2f%%" % (100 * read / total) + '\n\n\n' + result
+	return create_bar('Total:', "%.2f%%" % (100 * read / total)) + result
+
+def create_label(label, value):
+	if value == "0.00%":
+		btype = "label label-danger"
+	elif value == "100.00%":
+		btype = "label label-success"
+	else:
+		btype = "label label-warning"
+	return """
+			<div class="grid-item">
+			  """+label+"""
+			  <span class='"""+btype+"""'>"""+value+"""</span>
+			</div>
+		  """
+
+def create_bar(label, value):
+	if value == "0.00%":
+		btype = "progress-bar progress-bar-danger"
+	elif value == "100.00%":
+		btype = "progress-bar progress-bar-success"
+	else:
+		btype = "progress-bar progress-bar-warning"
+	return """
+			<div class="container">
+			  <h2>"""+label+"""</h2>
+			  <div class="progress">
+			    <div class='"""+btype+"""'role="progressbar" aria-valuenow='"""+value[:-1]+"""' aria-valuemin="0" aria-valuemax="100" style="width:"""+value+"""">
+			      <span>"""+value+""" Complete</span>
+			    </div>
+			  </div>
+			</div>
+		  """
 
 def get_progress():
 	with open('status.json') as s:

@@ -5,7 +5,7 @@
 6. handle wrong url (invalid input)
 7. enable search notes, group by reference
 8. enable delete notes
-9. implement progress
 10.implement new lines in reading
 11.smart search (e.g. 2 tim 2:1)
 12.note column independent from passage (scroll down, maintain content while others change)
+13.fixed progress bars alignment, length
