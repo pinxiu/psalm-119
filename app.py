@@ -193,6 +193,8 @@ import os
 from os import listdir
 
 def get_notes():
+	if not os.path.exists('notes'):
+		os.makedirs('notes')
 	notes = ''
 	for file_name in os.listdir('notes'):
 		if file_name[0] == '.':
