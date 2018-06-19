@@ -193,13 +193,14 @@ import os
 from os import listdir
 
 def get_notes():
-	if not os.path.exists('notes'):
-		os.makedirs('notes')
+	note_dir = 'notes'
+	if not os.path.exists(note_dir):
+		os.makedirs(note_dir)
 	notes = ''
-	for file_name in os.listdir('notes'):
+	for file_name in os.listdir(note_dir):
 		if file_name[0] == '.':
 			continue
-		with open('notes/' + file_name) as temp:
+		with open(note_dir + '/' + file_name) as temp:
 			notes += temp.read() + '\n\n'
 	return notes
 
