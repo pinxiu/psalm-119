@@ -38,33 +38,36 @@ with open('order.json') as f2:
 with open('index.json') as f3:
 	book_index = json.load(f3)
 
+with open('short_hand.json') as f4:
+	short_hand = json.load(f4)
+
 def display_progress():
 	status = get_progress()
 	html_str = """
-				<!doctype html>
-				<head>
-				<title>Read God's Word</title>
-				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-				<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
-				<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
-				</head>
-				<body>
+<!doctype html>
+<head>
+<title>Read God's Word</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+<body>
 
-				<div class="topnav">
-				  <a href="/">Reading</a>
-				  <a href="/notes">Notes</a>
-				  <a class="active" href="/progress">Progress</a>
-				</div>
+<div class="topnav">
+  <a href="/">Reading</a>
+  <a href="/notes">Notes</a>
+  <a class="active" href="/progress">Progress</a>
+</div>
 
-				<div>
+<div>
 				"""
 				
 	html_str += display(status)
 	html_str += """
-				</div>
-				</body>
-				</html>
+</div>
+</body>
+</html>
 				"""
 	with open('templates/progress.html', 'w') as p:
 		p.write(html_str)
@@ -93,34 +96,34 @@ def display(status):
 
 def create_label(label, value):
 	if value == "0.00%":
-		btype = "label label-danger"
+		btype = "badge badge-danger"
 	elif value == "100.00%":
-		btype = "label label-success"
+		btype = "badge badge-success"
 	else:
-		btype = "label label-warning"
+		btype = "badge badge-warning"
 	return """
-			<div class="grid-item">
-			  """+label+"""
-			  <span class='"""+btype+"""'>"""+value+"""</span>
-			</div>
+	<div class="grid-item">
+	  """+label+"""
+	  <span class='"""+btype+"""'>"""+value+"""</span>
+	</div>
 		  """
 
 def create_bar(label, value):
 	if value == "0.00%":
-		btype = "progress-bar progress-bar-danger"
+		btype = "progress-bar bg-danger"
 	elif value == "100.00%":
-		btype = "progress-bar progress-bar-success"
+		btype = "progress-bar bg-success"
 	else:
-		btype = "progress-bar progress-bar-warning"
+		btype = "progress-bar bg-warning"
 	return """
-			<div class="container">
-			  <h2>"""+label+"""</h2>
-			  <div class="progress">
-			    <div class='"""+btype+"""'role="progressbar" aria-valuenow='"""+value[:-1]+"""' aria-valuemin="0" aria-valuemax="100" style="width:"""+value+"""">
-			      <span>"""+value+""" Complete</span>
-			    </div>
-			  </div>
-			</div>
+	<div class="container">
+	  <h4>"""+label+"""</h4>
+	  <div class="progress">
+	    <div class='"""+btype+"""'role="progressbar" aria-valuenow='"""+value[:-1]+"""' aria-valuemin="0" aria-valuemax="100" style="width:"""+value+"""">
+	      <span>"""+value+""" Complete</span>
+	    </div>
+	  </div>
+	</div>
 		  """
 
 def get_progress():
@@ -298,6 +301,8 @@ def get_verse(book, chapter, verse, flag=False):
 	return re.subn("' s", "'s", result)[0]
 
 def parse(reference):
+	reference = fix_number(reference)
+	reference = fix_signs(reference)
 	m = re.match('^\s*(?P<book1>[1-3]?\s*[a-zA-Z]+)\s*(?P<chapter1>[0-9]+)?\s*:?\s*(?P<verse1>[0-9]+)?\s*(-?\s*(?P<book2>[1-3]?\s*[a-zA-Z]+)?\s*((?P<chapter2>[0-9]+)\s*:)?\s*(?P<verse2>[0-9]+)?)?', reference)
 	book1, chapter1, verse1, book2, chapter2, verse2 = m.group('book1'), m.group('chapter1'), m.group('verse1'), m.group('book2'), m.group('chapter2'), m.group('verse2')
 	if verse1 == None and chapter2 == None and verse2:
@@ -310,6 +315,27 @@ def parse(reference):
 		book2 = fix_name(book2)
 	return order_fix(book1, chapter1, verse1, book2, chapter2, verse2)
 
+def fix_number(reference):
+	reference = reference.lower()
+	reference = re.subn('first', '1',reference)[0]
+	reference = re.subn('second', '2',reference)[0]
+	reference = re.subn('third', '3',reference)[0]
+	reference = re.subn('iii ', '3',reference)[0]
+	reference = re.subn('ii ', '2',reference)[0]
+	reference = re.subn('i ', '1',reference)[0]
+	reference = re.subn('1st', '1',reference)[0]
+	reference = re.subn('2nd', '2',reference)[0]
+	reference = re.subn('3rd', '3',reference)[0]
+	return reference
+
+def fix_signs(reference):
+	correct_ref = ''
+	for c in reference:
+		if c != ':' and c != '-' and c != ' ' and not ('a' <= c <= 'z') and not ('A' <= c <= 'Z') and not ('0' <= c <= '9'):
+			continue
+		correct_ref += c
+	return correct_ref
+
 def fix_name(book):
 	m = re.match('(?P<number>[1-3])?\s*(?P<book>[a-zA-Z]+)', book)
 	book_name = m.group('book')
@@ -319,11 +345,8 @@ def fix_name(book):
 		if 'A' <= book_name[i+1] <= 'Z':
 			book_name[i+1] = book_name[:i+1] + book_name[i+1].lower() + book_name[i+2:]
 	if m.group('number'):
-		return m.group('number') + ' ' + book_name
-	elif book_name == 'Psalms':
-		return 'Psalm'
-	else:
-		return book_name
+		book_name = m.group('number') + ' ' + book_name
+	return short_hand[book_name]
 
 def order_fix(book1, chapter1, verse1, book2, chapter2, verse2):
 	if book2 and order[book1] > order[book2]:

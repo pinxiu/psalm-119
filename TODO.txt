@@ -6,6 +6,6 @@
 7. enable search notes, group by reference
 8. enable delete notes
 10.implement new lines in reading
-11.smart search (e.g. 2 tim 2:1)
 12.note column independent from passage (scroll down, maintain content while others change)
-13.fixed progress bars alignment, length
+13.fix progress bars alignment, length
+14.fix progress bars bugs (not showing, cache-->latency to update)
