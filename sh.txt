@@ -148,8 +148,8 @@ Eccle
 Ecc
 Ec
 Qoh
-Song of Solomon
 Song
+Song of Solomon
 Song of Songs
 SOS
 So
@@ -437,6 +437,6 @@ Jude
 Jud
 Jd
 Revelation
-Most common:Rev
+Rev
 Re
 The Revelation

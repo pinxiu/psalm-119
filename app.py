@@ -126,6 +126,12 @@ def display_flash_cards():
 	  line-height: 280px;
 	}
 
+	.center_p {
+	  line-height: 1.5;
+      display: inline-block;
+      vertical-align: middle;
+	}
+
 	.back {
 	  transform: rotateY(180deg);
 	  padding: 50px;
@@ -172,7 +178,7 @@ def show_flash_cards(flash_cards):
 		html_str += """
 	<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
       <div class="flippable appcon ac">
-        <div class="front">"""+reference+"""</div>
+        <div class="front"><div class="center_p">"""+reference+"""</div></div>
         <div class="back">"""+passage+"""</div>
       </div>
   	</div>
@@ -303,6 +309,8 @@ def display(status):
 			book_status += create_label(chapter + ': ', "%.2f%%" % (100 * c_read / c_total))
 		if book == 'Psalm':
 			book = 'Psalms'
+		elif book == "Song":
+			book = "Song of Solomon"
 		book_status = create_bar(book + ': ', "%.2f%%" % (100 * b_read / b_total)) + book_status + '</div>'
 		read += b_read
 		total += b_total
@@ -496,6 +504,10 @@ def fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2):
 		book1 = 'Psalms'
 	if book2 == 'Psalm' and not chapter2:
 		book2 = 'Psalms'
+	if book1 == 'Song':
+		book1 = 'Song of Solomon'
+	if book2 == 'Song':
+		book2 = 'Song of Solomon'
 	result = book1
 	if chapter1:
 		result += ' ' + chapter1
@@ -556,6 +568,7 @@ def get_verse(book, chapter, verse, flag=False):
 
 def parse(reference):
 	reference = fix_number(reference)
+	reference = fix_space(reference)
 	reference = fix_signs(reference)
 	m = re.match('^\s*(?P<book1>[1-3]?\s*[a-zA-Z]+)\s*(?P<chapter1>[0-9]+)?\s*:?\s*(?P<verse1>[0-9]+)?\s*(-?\s*(?P<book2>[1-3]?\s*[a-zA-Z]+)?\s*((?P<chapter2>[0-9]+)\s*:)?\s*(?P<verse2>[0-9]+)?)?', reference)
 	book1, chapter1, verse1, book2, chapter2, verse2 = m.group('book1'), m.group('chapter1'), m.group('verse1'), m.group('book2'), m.group('chapter2'), m.group('verse2')
@@ -582,10 +595,17 @@ def fix_number(reference):
 	reference = re.subn('3rd', '3',reference)[0]
 	return reference
 
+def fix_space(reference):
+	reference = re.subn('the revelation', 'revelation',reference)[0]
+	reference = re.subn('song of solomon', 'song',reference)[0]
+	reference = re.subn('song of songs', 'song',reference)[0]
+	reference = re.subn('canticle of canticles ', 'song',reference)[0]
+	return reference
+
 def fix_signs(reference):
 	correct_ref = ''
 	for c in reference:
-		if c != ':' and c != '-' and c != ' ' and not ('a' <= c <= 'z') and not ('A' <= c <= 'Z') and not ('0' <= c <= '9'):
+		if c != ':' and c != '-' and c != ' ' and not ('a' <= c <= 'z') and not ('0' <= c <= '9'):
 			continue
 		correct_ref += c
 	return correct_ref
@@ -593,11 +613,7 @@ def fix_signs(reference):
 def fix_name(book):
 	m = re.match('(?P<number>[1-3])?\s*(?P<book>[a-zA-Z]+)', book)
 	book_name = m.group('book')
-	if 'a' <= book_name[0] <= 'z':
-		book_name = book_name[0].upper() + book_name[1:]
-	for i in range(len(book_name) - 1):
-		if 'A' <= book_name[i+1] <= 'Z':
-			book_name[i+1] = book_name[:i+1] + book_name[i+1].lower() + book_name[i+2:]
+	book_name = book_name[0].upper() + book_name[1:]
 	if m.group('number'):
 		book_name = m.group('number') + ' ' + book_name
 	return short_hand[book_name]

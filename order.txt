@@ -19,7 +19,7 @@ Job
 Psalm
 Proverbs
 Ecclesiastes
-Song of Solomon
+Song
 Isaiah
 Jeremiah
 Lamentations

@@ -13,6 +13,5 @@
 18.makefile
 19.phone app ui
 20.notes don't disappear upon push
-21.deal with 404 Error with flash.json
-22.remove flash cards
+22.remove/order flash cards
 23.more quiz types
