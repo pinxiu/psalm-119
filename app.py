@@ -345,7 +345,6 @@ def create_bar(label, value):
 def get_progress():
 	status_dir = 'status.json'
 	if not os.path.exists(status_dir):
-		os.makedirs(status_dir)
 		inventory = dict()
 		for book in data:
 			inventory[book] = dict()
@@ -362,7 +361,6 @@ def get_progress():
 def get_flash_cards():
 	flash_dir = 'flash.json'
 	if not os.path.exists(flash_dir):
-		os.makedirs(flash_dir)
 		with open(flash_dir, 'w') as fc:
 			fc.write('{}\n')
 	with open(flash_dir) as fc:
