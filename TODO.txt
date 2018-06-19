@@ -6,9 +6,13 @@
 8. enable delete notes
 12.note column independent from passage (scroll down, maintain content while others change)
 13.fix progress bars alignment, length (Chrome & Safari)
-14.clean up code in app.py (e.g. css part)
+14.clean up code in app.py (e.g. css, html part)
 15.implement ENTER=press search
-16.add logs
+16.add logs (fix static.json)
 17.reading bookmarks
 18.makefile
 19.phone app ui
+20.notes don't disappear upon push
+21.deal with 404 Error with flash.json
+22.remove flash cards
+23.more quiz types

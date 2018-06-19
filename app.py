@@ -22,6 +22,167 @@ def search(reference='', flag='false'):
 	else:
 		return render_template('index.html', error='Cannot find passage')
 
+@app.route('/flashcards/')
+def flash():
+	return display_flash_cards()
+
+def display_flash_cards():
+	flash_cards = get_flash_cards()
+	html_str = """
+<!doctype html>
+<head>
+<title>Read God's Word</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+<style>
+	body {
+	  width: 1000px;
+	  margin: auto;
+	  font-weight: 300;
+	  font-size: 16px;
+	  font-family: 'Open Sans', sans-serif;
+	  color: #121212;
+	}
+
+	/* Add a black background color to the top navigation */
+	.topnav {
+	    background-color: #333;
+	    overflow: hidden;
+	}
+
+	/* Style the links inside the navigation bar */
+	.topnav a {
+	    float: left;
+	    color: #f2f2f2;
+	    text-align: center;
+	    padding: 14px 16px;
+	    text-decoration: none;
+	    font-size: 17px;
+	}
+
+	/* Change the color of links on hover */
+	.topnav a:hover {
+	    background-color: #ddd;
+	    color: black;
+	}
+
+	/* Add a color to the active/current link */
+	.topnav a.active {
+	    background-color: #4CAF50;
+	    color: white;
+	}
+	h1, h2, h3, h4 {
+	  font-family: 'Source Sans Pro', sans-serif;
+	}
+
+	.container {
+	  height:120px;
+	  width:600px;
+	  margin:auto;
+	  position:relative;
+	}
+
+	.flip-container {
+	  perspective: 1000;
+	  margin: 10px;
+	  float: left;
+	  cursor:pointer;
+	}
+
+	  .flippable {
+	    transition: 0.5s;
+	    transform-style: preserve-3d;
+	    position: relative;
+	  }
+
+	  .flipme {
+	    transform: rotateY(180deg);
+	  }
+	  
+	
+
+	.flip-container, .front, .back {
+	  width: 500px;
+	  height: 300px;
+	  text-align: center;
+	  overflow-wrap: break-word;
+	  overflow: scroll;
+	  font-size: 40px;
+	  border-radius: 10px;
+	}
+
+	.front, .back {
+		color: white;
+		background:#4CAF50;
+		backface-visibility: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.front {
+	  z-index: 2;
+	  line-height: 280px;
+	}
+
+	.back {
+	  transform: rotateY(180deg);
+	  padding: 50px;
+	  font-size: 18px;
+	  text-align: left;
+	  white-space: pre-line;
+	}
+
+</style>
+<script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+</head>
+<body>
+
+<div class="topnav">
+  <a href="/">Reading</a>
+  <a href="/notes">Notes</a>
+  <a href="/progress">Progress</a>
+  <a class="active" href="/flashcards">Flash Cards</a>
+  <a href="/quiz">Quiz</a>
+</div>
+
+<div class="container">
+				"""
+				
+	html_str += show_flash_cards(flash_cards)
+	html_str += """
+</div>
+<script>
+	$(".flippable").click(function(){
+	  $(this).toggleClass("flipme");
+	});
+</script>
+</body>
+</html>
+				"""
+	return html_str
+
+def show_flash_cards(flash_cards):
+	html_str = ""
+	for reference in flash_cards:
+		passage = find_passage(reference)[1]
+		_, reviewed, score, times = flash_cards[reference]
+		html_str += """
+	<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+      <div class="flippable appcon ac">
+        <div class="front">"""+reference+"""</div>
+        <div class="back">"""+passage+"""</div>
+      </div>
+  	</div>
+		  """
+	return html_str
+
+@app.route('/quiz/')
+def quiz():
+	return display_flash_cards()
+
 @app.route('/progress/')
 def progress():
 	return display_progress()
@@ -113,6 +274,7 @@ def display_progress():
   <a href="/">Reading</a>
   <a href="/notes">Notes</a>
   <a class="active" href="/progress">Progress</a>
+  <a href="/flashcards">Flash Cards</a>
   <a href="/quiz">Quiz</a>
 </div>
 
@@ -181,9 +343,31 @@ def create_bar(label, value):
 		  """
 
 def get_progress():
-	with open('status.json') as s:
+	status_dir = 'status.json'
+	if not os.path.exists(status_dir):
+		os.makedirs(status_dir)
+		inventory = dict()
+		for book in data:
+			inventory[book] = dict()
+			for chapter in data[book]:
+				inventory[book][chapter] = dict()
+				for verse in data[book][chapter]:
+					inventory[book][chapter][verse] = 'false'
+		with open(status_dir, 'w') as f2:
+			f2.write(json.dumps(inventory))
+	with open(status_dir) as s:
 		status = json.load(s)
 	return status
+
+def get_flash_cards():
+	flash_dir = 'flash.json'
+	if not os.path.exists(flash_dir):
+		os.makedirs(flash_dir)
+		with open(flash_dir, 'w') as fc:
+			fc.write('{}\n')
+	with open(flash_dir) as fc:
+		flash_cards = json.load(fc)
+	return flash_cards
 
 @app.route('/notes/')
 def notes():
@@ -191,6 +375,10 @@ def notes():
 
 import os
 from os import listdir
+
+def create_flash_card(reference):
+	# reference, reviewed, score, visited_times
+	return [reference, False, 0.0, 0]
 
 def get_notes():
 	note_dir = 'notes'
@@ -203,6 +391,17 @@ def get_notes():
 		with open(note_dir + '/' + file_name) as temp:
 			notes += temp.read() + '\n\n'
 	return notes
+
+@app.route('/store/')
+@app.route('/store/<reference>')
+@app.route('/store/<reference>/<flag>')
+def store(reference='', flag=False):
+	flash_cards = get_flash_cards()
+	if reference and reference not in flash_cards:
+		flash_cards[reference] = create_flash_card(reference)
+		with open('flash.json', 'w') as o:
+			o.write(json.dumps(flash_cards))
+	return redirect('/search/' + reference + '/' + flag)
 
 @app.route('/check/')
 @app.route('/check/<reference>')
@@ -420,13 +619,3 @@ def order_fix(book1, chapter1, verse1, book2, chapter2, verse2):
 		verse1 = tempv
 	return book1, chapter1, verse1, book2, chapter2, verse2
 
-# assert parse('1John') == ('1 John', None, None, None, None, None)
-# assert parse('1    John3') == ('1 John', '3', None, None, None, None)
-# assert parse('  1  John 3:2') == ('1 John','3', '2', None, None, None)
-# assert parse('1 John3: 2- 1') == ('1 John', '3', '1', '1 John', '3', '2')
-# assert parse('1 John 3:1-2:3') == ('1 John', '2', '3', '1 John', '3', '1')
-# assert parse('1 John 3-2:3') == ('1 John', '2', '3', '1 John', '3', None)
-# assert parse('1 John 10-2') == ('1 John', '2', None, '1 John', '10', None)
-# assert parse('1 John - 2John') == ('1 John', None, None, '2 John', None, None)
-
-# print(find_passage('2 Timothy - 1 Timothy'))

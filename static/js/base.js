@@ -20,6 +20,15 @@ function check(reference) {
     if (reference)
 	    location.href = window.location.origin + "/check/" + reference;
 }
+function store(reference) {
+    var flag;
+    if (number == null || number.value == 'Show Verse Number')
+        flag = 'false';
+    else
+        flag = 'true';
+    if (reference)
+        location.href = window.location.origin + "/store/" + reference+ '/' + flag;
+}
 function change(reference) {
 	if (document.getElementById('number').value == 'Show Verse Number') {
 		document.getElementById('number').value = 'Hide Verse Number';
