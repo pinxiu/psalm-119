@@ -49,15 +49,71 @@ def display_progress():
 <title>Read God's Word</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 </head>
+<style>
+	body {
+	  width: 1000px;
+	  margin: auto;
+	  text-align: left;
+	  font-weight: 300;
+	  font-size: 16px;
+	  font-family: 'Open Sans', sans-serif;
+	  color: #121212;
+	}
+	.progress {
+	  white-space: pre-line;
+	}
+	.container {
+	  padding: 10px;
+	}
+	.grid-container {
+	  display: grid;
+	  grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+	}
+	.grid-item {
+	  padding: 2px;
+	  text-align: right;
+	}
+
+	/* Add a black background color to the top navigation */
+	.topnav {
+	    background-color: #333;
+	    overflow: hidden;
+	}
+
+	/* Style the links inside the navigation bar */
+	.topnav a {
+	    float: left;
+	    color: #f2f2f2;
+	    text-align: center;
+	    padding: 14px 16px;
+	    text-decoration: none;
+	    font-size: 17px;
+	}
+
+	/* Change the color of links on hover */
+	.topnav a:hover {
+	    background-color: #ddd;
+	    color: black;
+	}
+
+	/* Add a color to the active/current link */
+	.topnav a.active {
+	    background-color: #4CAF50;
+	    color: white;
+	}
+	h1, h2, h3, h4 {
+	  font-family: 'Source Sans Pro', sans-serif;
+	}
+</style>
 <body>
 
 <div class="topnav">
   <a href="/">Reading</a>
   <a href="/notes">Notes</a>
   <a class="active" href="/progress">Progress</a>
+  <a href="/quiz">Quiz</a>
 </div>
 
 <div>
@@ -69,9 +125,7 @@ def display_progress():
 </body>
 </html>
 				"""
-	with open('templates/progress.html', 'w') as p:
-		p.write(html_str)
-	return render_template('progress.html')
+	return html_str
 
 def display(status):
 	result = ''

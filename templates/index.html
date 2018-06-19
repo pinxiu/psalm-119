@@ -11,6 +11,7 @@
   <a class="active" href="/">Reading</a>
   <a href="/notes">Notes</a>
   <a href="/progress">Progress</a>
+  <a href="/quiz">Quiz</a>
 </div>
 
 <div>
@@ -26,7 +27,7 @@
 
   {% if reference %}
 
-  <div class='column'>
+  <div class='column-l'>
 
     {% if reference %}
       <p>{{reference}} <input id="number" type="button" onclick="change('{{reference}}')" value='{{number}}'></p>
@@ -38,8 +39,8 @@
 
   </div>
 
-  <div class='column'>
-    <textarea id="note" cols="50" rows="5"></textarea>
+  <div class='column-r'>
+    <textarea id="note" cols="58" rows="5"></textarea>
     <input type="button" onclick="submit('{{reference}}')" value="Submit">
   </div>
 
