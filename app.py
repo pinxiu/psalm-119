@@ -174,41 +174,41 @@ def display_flashcards(username):
 
 	/* Main content */
 	.main {
-	 	margin: 20px;
-	    margin-top: 60px; /* Add a top margin to avoid content overlay */
+		margin: 20px;
+		margin-top: 60px; /* Add a top margin to avoid content overlay */
 	}
 
 	/* Add a black background color to the top navigation */
 	.topnav {
-	    background-color: #333;
-	    overflow: hidden;
-	    position: fixed; /* Set the navbar to fixed position */
-	    top: 0; /* Position the navbar at the top of the page */
-	    width: 100%; /* Full width */
+		background-color: #333;
+		overflow: hidden;
+		position: fixed; /* Set the navbar to fixed position */
+		top: 0; /* Position the navbar at the top of the page */
+		width: 100%; /* Full width */
 	}
 
 	/* Style the links inside the navigation bar */
 	.topnav a, input[type=button], input[type=submit], input[type=reset], button {
-	    float: left;
-	    color: #f2f2f2;
-	    text-align: center;
-	    padding: 14px 16px;
-	    text-decoration: none;
-	    font-weight: 300;
-	    font-size: 16px;
-	    font-family: 'Open Sans', sans-serif;
+		float: left;
+		color: #f2f2f2;
+		text-align: center;
+		padding: 14px 16px;
+		text-decoration: none;
+		font-weight: 300;
+		font-size: 16px;
+		font-family: 'Open Sans', sans-serif;
 	}
 
 	/* Change the color of links on hover */
 	.topnav a:hover {
-	    background-color: #ddd;
-	    color: black;
+		background-color: #ddd;
+		color: black;
 	}
 
 	/* Add a color to the active/current link */
 	.topnav a.active, input[type=button], input[type=submit], input[type=reset], button {
-	    background-color: #4CAF50;
-	    color: white;
+		background-color: #4CAF50;
+		color: white;
 	}
 	input[type=text], input[type=password], input[type=email] {
 	  width: 100%;
@@ -236,7 +236,7 @@ def display_flashcards(username):
 
 	/* Add a hover effect for buttons */
 	button:hover {
-	    opacity: 0.8;
+		opacity: 0.8;
 	}
 
 	.container {
@@ -254,13 +254,13 @@ def display_flashcards(username):
 	}
 
 	  .flippable {
-	    transition: 0.5s;
-	    transform-style: preserve-3d;
-	    position: relative;
+		transition: 0.5s;
+		transform-style: preserve-3d;
+		position: relative;
 	  }
 
 	  .flipme {
-	    transform: rotateY(180deg);
+		transform: rotateY(180deg);
 	  }
 	  
 	
@@ -291,8 +291,8 @@ def display_flashcards(username):
 
 	.center_p {
 	  line-height: 1.5;
-      display: inline-block;
-      vertical-align: middle;
+	  display: inline-block;
+	  vertical-align: middle;
 	}
 
 	.back {
@@ -304,26 +304,26 @@ def display_flashcards(username):
 	}
 	/* The Modal (background) */
 	.modal {
-	    display: none; /* Hidden by default */
-	    position: fixed; /* Stay in place */
-	    z-index: 1; /* Sit on top */
-	    left: 0;
-	    top: 0;
-	    width: 100%; /* Full width */
-	    height: 100%; /* Full height */
-	    overflow: auto; /* Enable scroll if needed */
-	    background-color: rgb(0,0,0); /* Fallback color */
-	    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-	    padding-top: 60px;
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		padding-top: 60px;
 	}
 
 	/* The Close Button */
 	.close {
-	    /* Position it in the top right corner outside of the modal */
-	    position: relative;
-	    right: -55px;
-	    top: -25px;
-	    font-weight: 300;
+		/* Position it in the top right corner outside of the modal */
+		position: relative;
+		right: -55px;
+		top: -25px;
+		font-weight: 300;
 		font-size: 16px;
 		font-family: 'Open Sans', sans-serif;
 		text-shadow: none;
@@ -333,24 +333,24 @@ def display_flashcards(username):
 	/* Close button on hover */
 	.close:hover,
 	.close:focus {
-	    color: #4CAF50;
-	    cursor: pointer;
+		color: #4CAF50;
+		cursor: pointer;
 	}
 
 	/* Add Zoom Animation */
 	.animate {
-	    -webkit-animation: animatezoom 0.6s;
-	    animation: animatezoom 0.6s
+		-webkit-animation: animatezoom 0.6s;
+		animation: animatezoom 0.6s
 	}
 
 	@-webkit-keyframes animatezoom {
-	    from {-webkit-transform: scale(0)} 
-	    to {-webkit-transform: scale(1)}
+		from {-webkit-transform: scale(0)} 
+		to {-webkit-transform: scale(1)}
 	}
 
 	@keyframes animatezoom {
-	    from {transform: scale(0)} 
-	    to {transform: scale(1)}
+		from {transform: scale(0)} 
+		to {transform: scale(1)}
 	}
 
 	.login-page {
@@ -404,8 +404,8 @@ def display_flashcards(username):
   <a href="/help/"""+username+"""">Help</a>"""
 	html_str += """
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
-  				"""
-  	html_str += """
+				"""
+	html_str += """
 </div>
 				"""
 	html_str += """
@@ -414,16 +414,16 @@ def display_flashcards(username):
 
   <!-- Modal Content -->
   <div class="animate">
-    <div class="login-page">
-      <span onclick="document.getElementById('login').style.display='none'" 
+	<div class="login-page">
+	  <span onclick="document.getElementById('login').style.display='none'" 
 class="close" title="Close Modal">Close</span>
-      <div class="form">
-        <form class="logout-form" action="/logout">
-          <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
-          <button>Log Out</button>
-        </form>
-      </div>
-    </div>
+	  <div class="form">
+		<form class="logout-form" action="/logout">
+		  <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
+		  <button>Log Out</button>
+		</form>
+	  </div>
+	</div>
   </div>
 </div>
 
@@ -433,9 +433,9 @@ var modal = document.getElementById('login');
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
 }
 </script>
 				"""
@@ -470,11 +470,11 @@ def show_flashcards(flashcards):
 		_, reviewed, score, times = flashcards[reference]
 		html_str += """
 	<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-      <div class="flippable appcon ac">
-        <div class="front"><div class="center_p">"""+reference+"""</div></div>
-        <div class="back">"""+passage+"""</div>
-      </div>
-  	</div>
+	  <div class="flippable appcon ac">
+		<div class="front"><div class="center_p">"""+reference+"""</div></div>
+		<div class="back">"""+passage+"""</div>
+	  </div>
+	</div>
 		  """
 	return html_str
 
@@ -521,7 +521,7 @@ def display_progress(username):
 	/* Main content */
 	.main {
 		margin: 20px;
-	    margin-top: 60px; /* Add a top margin to avoid content overlay */
+		margin-top: 60px; /* Add a top margin to avoid content overlay */
 	}
 
 	.container {
@@ -531,35 +531,35 @@ def display_progress(username):
 
 	/* Add a black background color to the top navigation */
 	.topnav {
-	    background-color: #333;
-	    overflow: hidden;
-	    position: fixed; /* Set the navbar to fixed position */
-	    top: 0; /* Position the navbar at the top of the page */
-	    width: 100%; /* Full width */
+		background-color: #333;
+		overflow: hidden;
+		position: fixed; /* Set the navbar to fixed position */
+		top: 0; /* Position the navbar at the top of the page */
+		width: 100%; /* Full width */
 	}
 
 	/* Style the links inside the navigation bar */
 	.topnav a, input[type=button], input[type=submit], input[type=reset], button {
-	    float: left;
-	    color: #f2f2f2;
-	    text-align: center;
-	    padding: 14px 16px;
-	    text-decoration: none;
-	    font-weight: 300;
-	    font-size: 16px;
-	    font-family: 'Open Sans', sans-serif;
+		float: left;
+		color: #f2f2f2;
+		text-align: center;
+		padding: 14px 16px;
+		text-decoration: none;
+		font-weight: 300;
+		font-size: 16px;
+		font-family: 'Open Sans', sans-serif;
 	}
 
 	/* Change the color of links on hover */
 	.topnav a:hover {
-	    background-color: #ddd;
-	    color: black;
+		background-color: #ddd;
+		color: black;
 	}
 
 	/* Add a color to the active/current link */
 	.topnav a.active, input[type=button], input[type=submit], input[type=reset], button {
-	    background-color: #4CAF50;
-	    color: white;
+		background-color: #4CAF50;
+		color: white;
 	}
 	input[type=text], input[type=password], input[type=email] {
 	  width: 100%;
@@ -587,37 +587,37 @@ def display_progress(username):
 
 	/* Add a hover effect for buttons */
 	button:hover {
-	    opacity: 0.8;
+		opacity: 0.8;
 	}
 
 	/* Extra style for the cancel button (red) */
 	.cancelbtn {
-	    width: auto;
-	    padding: 10px 18px;
-	    background-color: #f44336;
+		width: auto;
+		padding: 10px 18px;
+		background-color: #f44336;
 	}
 	/* The Modal (background) */
 	.modal {
-	    display: none; /* Hidden by default */
-	    position: fixed; /* Stay in place */
-	    z-index: 1; /* Sit on top */
-	    left: 0;
-	    top: 0;
-	    width: 100%; /* Full width */
-	    height: 100%; /* Full height */
-	    overflow: auto; /* Enable scroll if needed */
-	    background-color: rgb(0,0,0); /* Fallback color */
-	    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-	    padding-top: 60px;
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		padding-top: 60px;
 	}
 
 	/* The Close Button */
 	.close {
-	    /* Position it in the top right corner outside of the modal */
-	    position: relative;
-	    right: -55px;
-	    top: -25px;
-	    font-weight: 300;
+		/* Position it in the top right corner outside of the modal */
+		position: relative;
+		right: -55px;
+		top: -25px;
+		font-weight: 300;
 		font-size: 16px;
 		font-family: 'Open Sans', sans-serif;
 		text-shadow: none;
@@ -627,24 +627,24 @@ def display_progress(username):
 	/* Close button on hover */
 	.close:hover,
 	.close:focus {
-	    color: #4CAF50;
-	    cursor: pointer;
+		color: #4CAF50;
+		cursor: pointer;
 	}
 
 	/* Add Zoom Animation */
 	.animate {
-	    -webkit-animation: animatezoom 0.6s;
-	    animation: animatezoom 0.6s
+		-webkit-animation: animatezoom 0.6s;
+		animation: animatezoom 0.6s
 	}
 
 	@-webkit-keyframes animatezoom {
-	    from {-webkit-transform: scale(0)} 
-	    to {-webkit-transform: scale(1)}
+		from {-webkit-transform: scale(0)} 
+		to {-webkit-transform: scale(1)}
 	}
 
 	@keyframes animatezoom {
-	    from {transform: scale(0)} 
-	    to {transform: scale(1)}
+		from {transform: scale(0)} 
+		to {transform: scale(1)}
 	}
 
 	.login-page {
@@ -723,16 +723,16 @@ def display_progress(username):
 
   <!-- Modal Content -->
   <div class="animate">
-    <div class="login-page">
-      <span onclick="document.getElementById('login').style.display='none'" 
+	<div class="login-page">
+	  <span onclick="document.getElementById('login').style.display='none'" 
 class="close" title="Close Modal">Close</span>
-      <div class="form">
-        <form class="logout-form" action="/logout">
-          <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
-          <button>Log Out</button>
-        </form>
-      </div>
-    </div>
+	  <div class="form">
+		<form class="logout-form" action="/logout">
+		  <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
+		  <button>Log Out</button>
+		</form>
+	  </div>
+	</div>
   </div>
 </div>
 
@@ -742,9 +742,9 @@ var modal = document.getElementById('login');
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
 }
 </script>
 
@@ -817,9 +817,9 @@ def create_bar(label, value):
 	<div class="container">
 	  <h4>"""+label+"""</h4>
 	  <div class="progress">
-	    <div class='"""+btype+"""'role="progressbar" aria-valuenow='"""+value[:-1]+"""' aria-valuemin="0" aria-valuemax="100" style="width:"""+value+"""">
-	      <span>"""+value+""" Complete</span>
-	    </div>
+		<div class='"""+btype+"""'role="progressbar" aria-valuenow='"""+value[:-1]+"""' aria-valuemin="0" aria-valuemax="100" style="width:"""+value+"""">
+		  <span>"""+value+""" Complete</span>
+		</div>
 	  </div>
 		  """
 
