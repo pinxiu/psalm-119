@@ -85,7 +85,9 @@ def reset_user(username, password, email):
 
 def get_secret(username, password):
 	m = hashlib.sha256()
-	m.update("username: " + username + "; password: " + password)
+	info = "username: " + username + "; password: " + password
+	info = info.encode('utf-8')
+	m.update(info)
 	return m.hexdigest()
 
 def register_user(username, password, email):
