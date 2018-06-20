@@ -1,5 +1,4 @@
 body {
-  width: 1000px;
   margin: auto;
   text-align: left;
   font-weight: 300;
@@ -13,29 +12,18 @@ body {
 .passage {
   white-space: pre-line;
 }
-.progress {
-  white-space: pre-line;
-}
 .column-l {
   float: left;
-  width: 49%;
-  margin-right: 1%;
+  width: 50%;
+  margin: auto;
 }
 .column-r {
-  float: left;
-  width: 49%;
-  margin-left: 1%;
-}
-.container {
-  padding: 10px;
-}
-.grid-container {
-  display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
-}
-.grid-item {
-  padding: 2px;
-  text-align: right;
+  position: fixed;
+  top: 120px;
+  right: 0;
+  width: 50%;
+  text-align: center;
+  margin: auto;
 }
 
 /* Clear floats after the columns */
@@ -44,20 +32,32 @@ body {
   display: table;
   clear: both;
 }
+
+/* Main content */
+.main {
+    margin: 20px;
+    margin-top: 60px; /* Add a top margin to avoid content overlay */
+}
+
 /* Add a black background color to the top navigation */
 .topnav {
     background-color: #333;
     overflow: hidden;
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
 }
 
 /* Style the links inside the navigation bar */
-.topnav a {
+.topnav a, input[type=button], input[type=submit], input[type=reset], button {
     float: left;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 17px;
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Change the color of links on hover */
@@ -67,49 +67,156 @@ body {
 }
 
 /* Add a color to the active/current link */
-.topnav a.active {
+.topnav a.active, input[type=button], input[type=submit], input[type=reset], button {
     background-color: #4CAF50;
     color: white;
 }
-input[type=text] {
+input[type=text], input[type=password], input[type=email] {
+  width: 100%;
   padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 300;
-  font-family: 'Open Sans', sans-serif;
   margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
   box-sizing: border-box;
-}
-input[type=button], input[type=submit], input[type=reset] {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 16px 32px;
-  font-size: 16px;
   font-weight: 300;
+  font-size: 16px;
   font-family: 'Open Sans', sans-serif;
-  text-decoration: none;
+}
+
+input[type=button], input[type=submit], input[type=reset], button {
+  border: none;
   margin: 4px 2px;
   cursor: pointer;
+  float: none;
 }
+
+/* Set a style for all buttons */
+button {
+  width: 100%;
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
 #number {
   background-color: white;
   border: none;
   color: #4CAF50;
   padding: 0px 0px;
   font-size: 12px;
-  font-weight: 300;
-  font-family: 'Open Sans', sans-serif;
   text-decoration: none;
   margin: 0px 0px 0px 0px
 }
-h1, h2, h3, h4 {
-  font-family: 'Source Sans Pro', sans-serif;
-}
 textarea {
+  white-space: pre-line;
   margin-top: 20px;
   text-align: left;
-  font-size: 16px;
-  font-weight: 300;
-  font-family: 'Open Sans', sans-serif;
   resize: vertical;
+  overflow: hidden;
+  min-height: 50px;
+  max-height: 500px;
+  font-weight: 300;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+/* The Close Button */
+.close {
+    /* Position it in the top right corner outside of the modal */
+    position: relative;
+    right: -375px;
+    top: -5px;
+}
+
+/* Close button on hover */
+.close:hover,
+.close:focus {
+    color: #4CAF50;
+    cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)} 
+    to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom {
+    from {transform: scale(0)} 
+    to {transform: scale(1)}
+}
+
+.login-page {
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.form {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.form input {
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.form button {
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #FFFFFF;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.form button:hover,.form button:active,.form button:focus {
+  background: #43A047;
+}
+.form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+.form .message a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+.form .register-form {
+  display: none;
+}
+.form .reset-form {
+  display: none;
 }

@@ -1,14 +1,41 @@
 from flask import Flask, request, render_template, redirect
 app = Flask(__name__)
 
+import json
+import re
+import hashlib
+
+with open('ESV.json') as f1:
+	data = json.load(f1)
+
+with open('order.json') as f2:
+	order = json.load(f2)
+
+with open('index.json') as f3:
+	book_index = json.load(f3)
+
+with open('short_hand.json') as f4:
+	short_hand = json.load(f4)
+
+@app.route('/files')
+def files():
+	result = get_users()
+	for user in result:
+		result[user]['status.json'] = get_progress(user)
+		result[user]['notes'] = get_notes(user)
+		result[user]['flash.json'] = get_flashcards(user)
+	return json.dumps(result)
+
 @app.route('/')
-def index():
-	return render_template('index.html')
+@app.route('/<username>')
+def index(username=''):
+	return render_template('index.html', user=username, email=get_email(username))
 
 @app.route('/search/')
-@app.route('/search/<reference>')
-@app.route('/search/<reference>/<flag>')
-def search(reference='', flag='false'):
+@app.route('/search/<reference>/')
+@app.route('/search/<reference>/<flag>/')
+@app.route('/search/<reference>/<flag>/<username>')
+def search(reference='', flag='false', username=''):
 	if flag == 'true':
 		flag = True
 	else:
@@ -16,18 +43,117 @@ def search(reference='', flag='false'):
 	if reference:
 		reference, passage = find_passage(reference, flag)
 	else:
-		return render_template('index.html')
+		return render_template('index.html', user=username, email=get_email(username))
 	if passage:
-		return show_passage(reference, passage, flag)
+		return show_passage(reference, passage, flag, username)
 	else:
-		return render_template('index.html', error='Cannot find passage')
+		return render_template('index.html', error='Cannot find passage', user=username, email=get_email(username))
+
+@app.route('/register')
+def register():
+	username = request.args.get('reguname')
+	password = request.args.get('regpsw')
+	email = request.args.get('regemail')
+	error = register_user(username, password, email)
+	if error:
+		return render_template('index.html', error=error)
+	else:
+		return redirect('/login?loguname=' + username + '&logpsw=' + password)
+
+@app.route('/reset')
+def reset():
+	username = request.args.get('resuname')
+	email = request.args.get('resemail')
+	password = request.args.get('respsw')
+	error = reset_user(username, password, email)
+	if error:
+		return render_template('index.html', error=error)
+	else:
+		return redirect('/login?loguname=' + username + '&logpsw=' + password)
+
+def reset_user(username, password, email):
+	users = get_users()
+	if username not in users:
+		return 'User not exists'
+	elif email != users[username]['email']:
+		return 'Email does not match'
+	secret = get_secret(username, password)
+	users[username]['secret'] = secret
+	with open('users.json', 'w') as u:
+		u.write(json.dumps(users))
+	return ''
+
+def get_secret(username, password):
+	m = hashlib.sha256()
+	m.update("username: " + username + "; password: " + password)
+	return m.hexdigest()
+
+def register_user(username, password, email):
+	users = get_users()
+	if not username or not password or not email:
+		return 'Invalid inputs'
+	elif email in [item['email'] for item in users.values()]:
+		return 'This email is already registered'
+	elif username in users:
+		return 'This username is already registered'
+	else:
+		secret = get_secret(username, password)
+		users[username] = {'secret':secret, 'email':email}
+		with open('users.json', 'w') as u:
+			u.write(json.dumps(users))
+		if not os.path.exists(username):
+			os.makedirs(username)
+		return ''
+
+@app.route('/logout')
+def logout():
+	return redirect('/')
+
+@app.route('/login')
+def login(username='', password=''):
+	username = request.args.get('loguname')
+	password = request.args.get('logpsw')
+	error = auth(username, password)
+	if error:
+		return render_template('index.html', error=error)
+	else:
+		return render_template('index.html', user=username, email=get_email(username))
+
+def get_users():
+	users_dir = 'users.json'
+	if not os.path.exists(users_dir):
+		with open(users_dir, 'w') as u:
+			u.write('{}\n')
+	with open(users_dir) as u:
+		users = json.load(u)
+	return users
+
+def auth(username, password):
+	secret = get_secret(username, password)
+	users = get_users()
+	if username not in users:
+		return 'User not exists'
+	elif secret != users[username]['secret']:
+		return 'Password does not match'
+	else: 
+		return ''
 
 @app.route('/flashcards/')
-def flash():
-	return display_flash_cards()
+@app.route('/flashcards/<username>')
+def flash(username=''):
+	if not username:
+		return render_template('index.html', error='Please log in.')
+	return display_flashcards(username)
 
-def display_flash_cards():
-	flash_cards = get_flash_cards()
+def get_email(username):
+	users = get_users()
+	if username and username in users:
+		return users[username]['email']
+	else:
+		return ''
+
+def display_flashcards(username):
+	flashcards = get_flashcards(username)
 	html_str = """
 <!doctype html>
 <head>
@@ -35,30 +161,42 @@ def display_flash_cards():
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+<script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <style>
 	body {
-	  width: 1000px;
 	  margin: auto;
+	  text-align: left;
 	  font-weight: 300;
 	  font-size: 16px;
 	  font-family: 'Open Sans', sans-serif;
 	  color: #121212;
 	}
 
+	/* Main content */
+	.main {
+	 	margin: 20px;
+	    margin-top: 60px; /* Add a top margin to avoid content overlay */
+	}
+
 	/* Add a black background color to the top navigation */
 	.topnav {
 	    background-color: #333;
 	    overflow: hidden;
+	    position: fixed; /* Set the navbar to fixed position */
+	    top: 0; /* Position the navbar at the top of the page */
+	    width: 100%; /* Full width */
 	}
 
 	/* Style the links inside the navigation bar */
-	.topnav a {
+	.topnav a, input[type=button], input[type=submit], input[type=reset], button {
 	    float: left;
 	    color: #f2f2f2;
 	    text-align: center;
 	    padding: 14px 16px;
 	    text-decoration: none;
-	    font-size: 17px;
+	    font-weight: 300;
+	    font-size: 16px;
+	    font-family: 'Open Sans', sans-serif;
 	}
 
 	/* Change the color of links on hover */
@@ -68,12 +206,37 @@ def display_flash_cards():
 	}
 
 	/* Add a color to the active/current link */
-	.topnav a.active {
+	.topnav a.active, input[type=button], input[type=submit], input[type=reset], button {
 	    background-color: #4CAF50;
 	    color: white;
 	}
-	h1, h2, h3, h4 {
-	  font-family: 'Source Sans Pro', sans-serif;
+	input[type=text], input[type=password], input[type=email] {
+	  width: 100%;
+	  padding: 12px 20px;
+	  margin: 8px 0;
+	  display: inline-block;
+	  border: 1px solid #ccc;
+	  box-sizing: border-box;
+	  font-weight: 300;
+	  font-size: 16px;
+	  font-family: 'Open Sans', sans-serif;
+	}
+
+	input[type=button], input[type=submit], input[type=reset], button {
+	  border: none;
+	  margin: 4px 2px;
+	  cursor: pointer;
+	  float: none;
+	}
+
+	/* Set a style for all buttons */
+	button {
+	  width: 100%;
+	}
+
+	/* Add a hover effect for buttons */
+	button:hover {
+	    opacity: 0.8;
 	}
 
 	.container {
@@ -139,27 +302,157 @@ def display_flash_cards():
 	  text-align: left;
 	  white-space: pre-line;
 	}
+	/* The Modal (background) */
+	.modal {
+	    display: none; /* Hidden by default */
+	    position: fixed; /* Stay in place */
+	    z-index: 1; /* Sit on top */
+	    left: 0;
+	    top: 0;
+	    width: 100%; /* Full width */
+	    height: 100%; /* Full height */
+	    overflow: auto; /* Enable scroll if needed */
+	    background-color: rgb(0,0,0); /* Fallback color */
+	    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	    padding-top: 60px;
+	}
+
+	/* The Close Button */
+	.close {
+	    /* Position it in the top right corner outside of the modal */
+	    position: relative;
+	    right: -55px;
+	    top: -25px;
+	    font-weight: 300;
+		font-size: 16px;
+		font-family: 'Open Sans', sans-serif;
+		text-shadow: none;
+		opacity: 1.0;
+	}
+
+	/* Close button on hover */
+	.close:hover,
+	.close:focus {
+	    color: #4CAF50;
+	    cursor: pointer;
+	}
+
+	/* Add Zoom Animation */
+	.animate {
+	    -webkit-animation: animatezoom 0.6s;
+	    animation: animatezoom 0.6s
+	}
+
+	@-webkit-keyframes animatezoom {
+	    from {-webkit-transform: scale(0)} 
+	    to {-webkit-transform: scale(1)}
+	}
+
+	@keyframes animatezoom {
+	    from {transform: scale(0)} 
+	    to {transform: scale(1)}
+	}
+
+	.login-page {
+	  width: 360px;
+	  padding: 8% 0 0;
+	  margin: auto;
+	}
+	.form {
+	  position: relative;
+	  z-index: 1;
+	  background: #FFFFFF;
+	  max-width: 360px;
+	  margin: 0 auto 100px;
+	  padding: 45px;
+	  text-align: center;
+	  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+	}
+	.form input {
+	  outline: 0;
+	  background: #f2f2f2;
+	  width: 100%;
+	  border: 0;
+	  margin: 0 0 15px;
+	  padding: 15px;
+	  box-sizing: border-box;
+	}
+	.form button {
+	  outline: 0;
+	  background: #4CAF50;
+	  width: 100%;
+	  border: 0;
+	  padding: 15px;
+	  color: #FFFFFF;
+	  -webkit-transition: all 0.3 ease;
+	  transition: all 0.3 ease;
+	  cursor: pointer;
+	}
+	.form button:hover,.form button:active,.form button:focus {
+	  background: #43A047;
+	}
 
 </style>
-<script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
 </head>
 <body>
 
 <div class="topnav">
-  <a href="/">Reading</a>
-  <a href="/notes">Notes</a>
-  <a href="/progress">Progress</a>
-  <a class="active" href="/flashcards">Flash Cards</a>
-  <a href="/quiz">Quiz</a>
+  <a href="/"""+username+"""">Reading</a>
+  <a href="/notes/"""+username+"""">Notes</a>
+  <a href="/progress/"""+username+"""">Progress</a>
+  <a class="active" href="/flashcards/"""+username+"""">Flashcards</a>
+  <a href="/help/"""+username+"""">Help</a>"""
+	html_str += """
+  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
+  				"""
+  	html_str += """
 </div>
+				"""
+	html_str += """
+
+<div id="login" class="modal">
+
+  <!-- Modal Content -->
+  <div class="animate">
+    <div class="login-page">
+      <span onclick="document.getElementById('login').style.display='none'" 
+class="close" title="Close Modal">Close</span>
+      <div class="form">
+        <form class="logout-form" action="/logout">
+          <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
+          <button>Log Out</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('login');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+				"""
+
+	html_str += """
+
+<div class="main">
 
 <div class="container">
 				"""
 				
-	html_str += show_flash_cards(flash_cards)
+	html_str += show_flashcards(flashcards)
 	html_str += """
 </div>
+
+</div>
+
 <script>
 	$(".flippable").click(function(){
 	  $(this).toggleClass("flipme");
@@ -170,11 +463,11 @@ def display_flash_cards():
 				"""
 	return html_str
 
-def show_flash_cards(flash_cards):
+def show_flashcards(flashcards):
 	html_str = ""
-	for reference in flash_cards:
+	for reference in flashcards:
 		passage = find_passage(reference)[1]
-		_, reviewed, score, times = flash_cards[reference]
+		_, reviewed, score, times = flashcards[reference]
 		html_str += """
 	<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
       <div class="flippable appcon ac">
@@ -185,31 +478,20 @@ def show_flash_cards(flash_cards):
 		  """
 	return html_str
 
-@app.route('/quiz/')
-def quiz():
-	return display_flash_cards()
+@app.route('/help/')
+@app.route('/help/<username>')
+def help(username=''):
+	return render_template('help.html', user=username, email=get_email(username))
 
 @app.route('/progress/')
-def progress():
-	return display_progress()
+@app.route('/progress/<username>')
+def progress(username=''):
+	if not username:
+		return render_template('index.html', error='Please log in.')
+	return display_progress(username)
 
-import json
-import re
-
-with open('ESV.json') as f1:
-	data = json.load(f1)
-
-with open('order.json') as f2:
-	order = json.load(f2)
-
-with open('index.json') as f3:
-	book_index = json.load(f3)
-
-with open('short_hand.json') as f4:
-	short_hand = json.load(f4)
-
-def display_progress():
-	status = get_progress()
+def display_progress(username):
+	status = get_progress(username)
 	html_str = """
 <!doctype html>
 <head>
@@ -217,10 +499,9 @@ def display_progress():
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
-</head>
+<script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <style>
 	body {
-	  width: 1000px;
 	  margin: auto;
 	  text-align: left;
 	  font-weight: 300;
@@ -228,35 +509,45 @@ def display_progress():
 	  font-family: 'Open Sans', sans-serif;
 	  color: #121212;
 	}
-	.progress {
-	  white-space: pre-line;
-	}
-	.container {
-	  padding: 10px;
-	}
 	.grid-container {
 	  display: grid;
-	  grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+	  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
 	}
 	.grid-item {
 	  padding: 2px;
 	  text-align: right;
 	}
 
+	/* Main content */
+	.main {
+		margin: 20px;
+	    margin-top: 60px; /* Add a top margin to avoid content overlay */
+	}
+
+	.container {
+		margin: auto;
+		margin-bottom: 30px;
+	}
+
 	/* Add a black background color to the top navigation */
 	.topnav {
 	    background-color: #333;
 	    overflow: hidden;
+	    position: fixed; /* Set the navbar to fixed position */
+	    top: 0; /* Position the navbar at the top of the page */
+	    width: 100%; /* Full width */
 	}
 
 	/* Style the links inside the navigation bar */
-	.topnav a {
+	.topnav a, input[type=button], input[type=submit], input[type=reset], button {
 	    float: left;
 	    color: #f2f2f2;
 	    text-align: center;
 	    padding: 14px 16px;
 	    text-decoration: none;
-	    font-size: 17px;
+	    font-weight: 300;
+	    font-size: 16px;
+	    font-family: 'Open Sans', sans-serif;
 	}
 
 	/* Change the color of links on hover */
@@ -266,30 +557,212 @@ def display_progress():
 	}
 
 	/* Add a color to the active/current link */
-	.topnav a.active {
+	.topnav a.active, input[type=button], input[type=submit], input[type=reset], button {
 	    background-color: #4CAF50;
 	    color: white;
 	}
-	h1, h2, h3, h4 {
-	  font-family: 'Source Sans Pro', sans-serif;
+	input[type=text], input[type=password], input[type=email] {
+	  width: 100%;
+	  padding: 12px 20px;
+	  margin: 8px 0;
+	  display: inline-block;
+	  border: 1px solid #ccc;
+	  box-sizing: border-box;
+	  font-weight: 300;
+	  font-size: 16px;
+	  font-family: 'Open Sans', sans-serif;
+	}
+
+	input[type=button], input[type=submit], input[type=reset], button {
+	  border: none;
+	  margin: 4px 2px;
+	  cursor: pointer;
+	  float: none;
+	}
+
+	/* Set a style for all buttons */
+	button {
+	  width: 100%;
+	}
+
+	/* Add a hover effect for buttons */
+	button:hover {
+	    opacity: 0.8;
+	}
+
+	/* Extra style for the cancel button (red) */
+	.cancelbtn {
+	    width: auto;
+	    padding: 10px 18px;
+	    background-color: #f44336;
+	}
+	/* The Modal (background) */
+	.modal {
+	    display: none; /* Hidden by default */
+	    position: fixed; /* Stay in place */
+	    z-index: 1; /* Sit on top */
+	    left: 0;
+	    top: 0;
+	    width: 100%; /* Full width */
+	    height: 100%; /* Full height */
+	    overflow: auto; /* Enable scroll if needed */
+	    background-color: rgb(0,0,0); /* Fallback color */
+	    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	    padding-top: 60px;
+	}
+
+	/* The Close Button */
+	.close {
+	    /* Position it in the top right corner outside of the modal */
+	    position: relative;
+	    right: -55px;
+	    top: -25px;
+	    font-weight: 300;
+		font-size: 16px;
+		font-family: 'Open Sans', sans-serif;
+		text-shadow: none;
+		opacity: 1.0;
+	}
+
+	/* Close button on hover */
+	.close:hover,
+	.close:focus {
+	    color: #4CAF50;
+	    cursor: pointer;
+	}
+
+	/* Add Zoom Animation */
+	.animate {
+	    -webkit-animation: animatezoom 0.6s;
+	    animation: animatezoom 0.6s
+	}
+
+	@-webkit-keyframes animatezoom {
+	    from {-webkit-transform: scale(0)} 
+	    to {-webkit-transform: scale(1)}
+	}
+
+	@keyframes animatezoom {
+	    from {transform: scale(0)} 
+	    to {transform: scale(1)}
+	}
+
+	.login-page {
+	  width: 360px;
+	  padding: 8% 0 0;
+	  margin: auto;
+	}
+	.form {
+	  position: relative;
+	  z-index: 1;
+	  background: #FFFFFF;
+	  max-width: 360px;
+	  margin: 0 auto 100px;
+	  padding: 45px;
+	  text-align: center;
+	  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+	}
+	.form input {
+	  outline: 0;
+	  background: #f2f2f2;
+	  width: 100%;
+	  border: 0;
+	  margin: 0 0 15px;
+	  padding: 15px;
+	  box-sizing: border-box;
+	}
+	.form button {
+	  outline: 0;
+	  background: #4CAF50;
+	  width: 100%;
+	  border: 0;
+	  padding: 15px;
+	  color: #FFFFFF;
+	  -webkit-transition: all 0.3 ease;
+	  transition: all 0.3 ease;
+	  cursor: pointer;
+	}
+	.form button:hover,.form button:active,.form button:focus {
+	  background: #43A047;
+	}
+	.form .message {
+	  margin: 15px 0 0;
+	  color: #b3b3b3;
+	  font-size: 12px;
+	}
+	.form .message a {
+	  color: #4CAF50;
+	  text-decoration: none;
+	}
+	.form .register-form {
+	  display: none;
+	}
+	.form .reset-form {
+	  display: none;
 	}
 </style>
+</head>
+
 <body>
 
 <div class="topnav">
-  <a href="/">Reading</a>
-  <a href="/notes">Notes</a>
-  <a class="active" href="/progress">Progress</a>
-  <a href="/flashcards">Flash Cards</a>
-  <a href="/quiz">Quiz</a>
+  <a href="/"""+username+"""">Reading</a>
+  <a href="/notes/"""+username+"""">Notes</a>
+  <a class="active" href="/progress/"""+username+"""">Progress</a>
+  <a href="/flashcards/"""+username+"""">Flashcards</a>
+  <a href="/help/"""+username+"""">Help</a>"""
+	html_str += """
+  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
+				"""
+	html_str += """
+</div>
+				"""
+	html_str += """
+
+<div id="login" class="modal">
+
+  <!-- Modal Content -->
+  <div class="animate">
+    <div class="login-page">
+      <span onclick="document.getElementById('login').style.display='none'" 
+class="close" title="Close Modal">Close</span>
+      <div class="form">
+        <form class="logout-form" action="/logout">
+          <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
+          <button>Log Out</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div>
+<script>
+// Get the modal
+var modal = document.getElementById('login');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+				"""
+
+	html_str += """
+
+<div class="main">
+
+<div class="container">
 				"""
 				
 	html_str += display(status)
 	html_str += """
 </div>
+
+</div>
+
 </body>
 </html>
 				"""
@@ -340,6 +813,7 @@ def create_bar(label, value):
 	else:
 		btype = "progress-bar bg-warning"
 	return """
+	</div>
 	<div class="container">
 	  <h4>"""+label+"""</h4>
 	  <div class="progress">
@@ -347,11 +821,10 @@ def create_bar(label, value):
 	      <span>"""+value+""" Complete</span>
 	    </div>
 	  </div>
-	</div>
 		  """
 
-def get_progress():
-	status_dir = 'status.json'
+def get_progress(username):
+	status_dir = username + '/status.json'
 	if not os.path.exists(status_dir):
 		inventory = dict()
 		for book in data:
@@ -366,53 +839,66 @@ def get_progress():
 		status = json.load(s)
 	return status
 
-def get_flash_cards():
-	flash_dir = 'flash.json'
+def get_flashcards(username):
+	flash_dir = username + '/flash.json'
 	if not os.path.exists(flash_dir):
 		with open(flash_dir, 'w') as fc:
 			fc.write('{}\n')
 	with open(flash_dir) as fc:
-		flash_cards = json.load(fc)
-	return flash_cards
+		flashcards = json.load(fc)
+	return flashcards
 
 @app.route('/notes/')
-def notes():
-	return render_template('notes.html', notes=get_notes())
+@app.route('/notes/<username>')
+def notes(username=''):
+	if not username:
+		return render_template('index.html', error='Please log in.')
+	return render_template('notes.html', notes=get_notes(username), user=username, email=get_email(username))
 
 import os
 from os import listdir
 
-def create_flash_card(reference):
+def create_flashcard(reference):
 	# reference, reviewed, score, visited_times
 	return [reference, False, 0.0, 0]
 
-def get_notes():
-	note_dir = 'notes'
+def check_note_dir(username):
+	note_dir = username + '/notes'
 	if not os.path.exists(note_dir):
 		os.makedirs(note_dir)
+
+def get_notes(username):
+	check_note_dir(username)
 	notes = ''
+	note_dir = username + '/notes'
 	for file_name in os.listdir(note_dir):
 		if file_name[0] == '.':
 			continue
 		with open(note_dir + '/' + file_name) as temp:
 			notes += temp.read() + '\n\n'
-	return notes
+	return re.subn('<br>', '\n', notes)[0]
 
 @app.route('/store/')
-@app.route('/store/<reference>')
-@app.route('/store/<reference>/<flag>')
-def store(reference='', flag=False):
-	flash_cards = get_flash_cards()
-	if reference and reference not in flash_cards:
-		flash_cards[reference] = create_flash_card(reference)
-		with open('flash.json', 'w') as o:
-			o.write(json.dumps(flash_cards))
-	return redirect('/search/' + reference + '/' + flag)
+@app.route('/store/<reference>/')
+@app.route('/store/<reference>/<flag>/')
+@app.route('/store/<reference>/<flag>/<username>')
+def store(reference='', flag=False, username=''):
+	if not username:
+		return render_template('index.html', error='Please log in.')
+	flashcards = get_flashcards(username)
+	if reference and reference not in flashcards:
+		flashcards[reference] = create_flashcard(reference)
+		with open(username + '/flash.json', 'w') as o:
+			o.write(json.dumps(flashcards))
+	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 @app.route('/check/')
-@app.route('/check/<reference>')
-def check(reference=''):
-	status = get_progress()
+@app.route('/check/<reference>/')
+@app.route('/check/<reference>/<username>')
+def check(reference='', username=''):
+	if not username:
+		return render_template('index.html', error='Please log in.')
+	status = get_progress(username)
 	if reference:
 		book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)
 		if book2:
@@ -425,9 +911,9 @@ def check(reference=''):
 				check_book(status, book2, chapter2=chapter2, verse2=verse2)
 		else:
 			check_book(status, book1, chapter1, verse1, chapter1, verse1)
-	with open('status.json', 'w') as o:
+	with open(username + '/status.json', 'w') as o:
 		o.write(json.dumps(status))
-	return redirect('/')
+	return redirect('/' + username)
 
 def check_book(status, book, chapter1=None, verse1=None, chapter2=None, verse2=None):
 	if chapter1 == None:
@@ -461,21 +947,25 @@ def check_verse(status, book, chapter, verse):
 import datetime
 
 @app.route('/submit/')
-@app.route('/submit/<reference>/<note>')
-@app.route('/submit/<reference>/<note>/<flag>')
-def submit(reference='', note='', flag=False):
+@app.route('/submit/<reference>/<note>/')
+@app.route('/submit/<reference>/<note>/<flag>/')
+@app.route('/submit/<reference>/<note>/<flag>/<username>')
+def submit(reference='', note='', flag=False, username=''):
+	if not username:
+		return render_template('index.html', error='Please log in.')
 	if reference and note:
+		check_note_dir(username)
 		note = reference + '\n' + note
-		with open('notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', 'w') as f0:
+		with open(username + '/notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', 'w') as f0:
 			f0.write(note)
-	return redirect('/search/' + reference + '/' + flag)
+	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
-def show_passage(reference, passage, flag=False):
+def show_passage(reference, passage, flag=False, username=''):
 	if flag:
 		number = 'Hide Verse Number'
 	else:
 		number = 'Show Verse Number'
-	return render_template('index.html', reference=reference, passage=passage, number=number)
+	return render_template('index.html', reference=reference, passage=passage, number=number, user=username, email=get_email(username))
 
 def find_passage(reference, flag=False):
 	try:

@@ -8,6 +8,20 @@
 </head>
 <body>
 
+<div class="topnav">
+  <a href="/{{user}}">Reading</a>
+  <a href="/notes/{{user}}">Notes</a>
+  <a href="/progress/{{user}}">Progress</a>
+  <a href="/flashcards/{{user}}">Flashcards</a>
+  <a class="active" href="/help/{{user}}">Help</a>
+  {% if user %}
+  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="{{user}}">
+  {% else %}
+  <!-- Button to open the modal login form -->
+  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="Log In">
+  {% endif %}
+</div>
+
 {% if user %}
 
 <div id="login" class="modal">
@@ -98,27 +112,35 @@ window.onclick = function(event) {
 }
 </script>
 
-<div class="topnav">
-  <a href="/{{user}}">Reading</a>
-  <a class="active" href="/notes/{{user}}">Notes</a>
-  <a href="/progress/{{user}}">Progress</a>
-  <a href="/flashcards/{{user}}">Flashcards</a>
-  <a href="/help/{{user}}">Help</a>
-  {% if user %}
-  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="{{user}}">
-  {% else %}
-  <!-- Button to open the modal login form -->
-  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="Log In">
-  {% endif %}
-</div>
-
 <div class="main">
 
 <div>
+	<h2>Reading:</h2>
+	<p>Type in reference, e.g. 2tim1:2--2:1, and press ENTER or click "Search".</p>
+	<p>Click "Show/Hide Verse Number" to show/hide verse number.</p>
+	<p>Click "Add to Flashcards" to add this verse/passage to your Flashcards.</p>
+	<p>Click "Finish Reading" to mark this verse/passage as read.</p>
+	<p>You can also submit a note corresponding to this verse/passage.</p>
+</div>
+
+<div>
+	<h2>Notes:</h2>
+	<p>Your notes are displayed here.</p>
+</div>
+
+<div>
+	<h2>Progress:</h2>
+	<p>Your reading progress is displayed here.</p>
+</div>
+
+<div>
+	<h2>Flashcards:</h2>
+	<p>Your flashcards are displayed here. Click on the flashcards to see the other side.</p>
+</div>
+
+<div>
   
-  {% if notes %}
-    <p class="notes">{{notes}}</p>
-  {% endif %}
+  
 
 </div>
 

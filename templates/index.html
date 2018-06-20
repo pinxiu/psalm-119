@@ -4,19 +4,128 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+<script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
 </head>
 <body>
 
 <div class="topnav">
-  <a class="active" href="/">Reading</a>
-  <a href="/notes">Notes</a>
-  <a href="/progress">Progress</a>
-  <a href="/flashcards">Flash Cards</a>
-  <a href="/quiz">Quiz</a>
+  <a class="active" href="/{{user}}">Reading</a>
+  <a href="/notes/{{user}}">Notes</a>
+  <a href="/progress/{{user}}">Progress</a>
+  <a href="/flashcards/{{user}}">Flashcards</a>
+  <a href="/help/{{user}}">Help</a>
+  {% if user %}
+  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="{{user}}">
+  {% else %}
+  <!-- Button to open the modal login form -->
+  <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="Log In">
+  {% endif %}
 </div>
 
+{% if user %}
+
+<div id="login" class="modal">
+  <!-- Modal Content -->
+  <div class="animate">
+    <div class="login-page">
+      <span onclick="document.getElementById('login').style.display='none'" 
+class="close" title="Close Modal">Close</span>
+      <div class="form">
+        <form class="logout-form" action="/logout">
+          <p style="text-align:left;"><b>Email: </b>{{email}}</p>
+          <button>Log Out</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+<div id="login" class="modal">
+  <!-- Modal Content -->
+  <div class="animate">
+    <div class="login-page">
+      <span onclick="document.getElementById('login').style.display='none'" 
+class="close" title="Close Modal">Close</span>
+      <div class="form">
+        <form class="register-form" action="/register">
+          <input type="text" name="reguname" placeholder="username"/>
+          <input type="password" name="regpsw" placeholder="password"/>
+          <input type="email" name="regemail" placeholder="email address"/>
+          <button>Register</button>
+          <p class="message">Already registered? <a id="a3" href="#">Log In</a></p>
+        </form>
+        <form class="reset-form" action="/reset">
+          <input type="text" name="resuname" placeholder="username"/>
+          <input type="email" name="resemail" placeholder="email address"/>
+          <input type="password" name="respsw" placeholder="new password"/>
+          <button>Reset Password</button>
+          <p class="message">Try again? <a id="a4" href="#">Log In</a></p>
+        </form>
+        <form class="login-form" action="/login">
+          <input type="text" name="loguname" placeholder="username"/>
+          <input type="password" name="logpsw" placeholder="password"/>
+          <button>Log In</button>
+          <p class="message">Not registered? <a id="a1" href="#">Create an account</a></p>
+          <p class="message">Forgot password? <a id="a2" href="#">Reset password</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$('#a1').click(function(){
+   $('.login-form').hide();
+   $('.reset-form').hide();
+   $('.register-form').show();
+});
+$('#a2').click(function(){
+   $('.login-form').hide();
+   $('.reset-form').show();
+   $('.register-form').hide();
+});
+$('#a3').click(function(){
+   $('.login-form').show();
+   $('.reset-form').hide();
+   $('.register-form').hide();
+});
+$('#a4').click(function(){
+   $('.login-form').show();
+   $('.reset-form').hide();
+   $('.register-form').hide();
+});
+</script>
+
+{% endif %}
+
+<script>
+// Get the modal
+var modal = document.getElementById('login');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+<div class="main">
+
 <div>
-  Passage: <input type="text" id="reference"><input type="button" onclick="search()" value="Search">
+  Passage: <input type="text" style="width:50%;" id="reference"><input id="search_button" type="button" onclick="search('{{user}}')" style="margin:10px;" value="Search">
+  <script>
+    var input = document.getElementById("reference");
+    input.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            document.getElementById("search_button").click();
+        }
+    });
+  </script>
 
 </div>
 
@@ -28,25 +137,36 @@
 
   {% if reference %}
 
+  <div class='column-r'>
+      <div><textarea id="note" cols="50" rows="5" onkeyup="setHeight();" onkeydown="setHeight();"></textarea></div>
+      <div><input type="button" onclick="submit('{{reference}}', '{{user}}')" value="Submit"></div>
+  </div>
+
   <div class='column-l'>
 
     {% if reference %}
-      <p>{{reference}} <input id="number" type="button" onclick="change('{{reference}}')" value='{{number}}'></p>
+      <p>{{reference}} <input id="number" type="button" onclick="change('{{reference}}', '{{user}}')" value='{{number}}'></p>
     {% endif %}
   	{% if passage %}
   	  <p class='passage'>{{passage}}</p>
   	{% endif %}
-    <input type="button" onclick="store('{{reference}}')" value="Add to Flashcards">
-    <input type="button" onclick="check('{{reference}}')" value="Finished Reading">
+    <input type="button" onclick="store('{{reference}}', '{{user}}')" value="Add to Flashcards">
+    <input type="button" onclick="check('{{reference}}', '{{user}}')" value="Finished Reading">
 
   </div>
 
-  <div class='column-r'>
-    <textarea id="note" cols="58" rows="5"></textarea>
-    <input type="button" onclick="submit('{{reference}}')" value="Submit">
-  </div>
+  
+
+  <script type="text/javascript">
+    function setHeight(){
+      document.getElementById('note').style.height = "106px";
+      document.getElementById('note').style.height = (document.getElementById('note').scrollHeight)+'px';
+    }
+  </script>
 
   {% endif %}
+
+</div>
 
 </div>
 
