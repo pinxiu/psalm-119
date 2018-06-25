@@ -12,3 +12,4 @@
 24.fix difference between effects of render_template and html_str
 27.improve note submission strategy (vs. using param=note)
 28.add security protection on user reg/auth
+29.fix cloudinary path (.ignore etc; empty file etc.)

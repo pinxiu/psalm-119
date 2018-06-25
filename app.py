@@ -120,9 +120,6 @@ def reset_user(username, password, email):
 	secret = get_secret(username, password)
 	users[username]['secret'] = secret
 	upload('users.json', users)
-	get_progress(username)
-	get_notes(username)
-	get_flashcards(username)
 	return ''
 
 def get_secret(username, password):
@@ -144,9 +141,9 @@ def register_user(username, password, email):
 		secret = get_secret(username, password)
 		users[username] = {'secret':secret, 'email':email}
 		upload('users.json', users)
-
-		if not os.path.exists(username):
-			os.makedirs(username)
+		get_progress(username)
+		get_notes(username)
+		get_flashcards(username)
 		return ''
 
 @app.route('/logout')
@@ -171,6 +168,8 @@ def get_users():
 def auth(username, password):
 	secret = get_secret(username, password)
 	users = get_users()
+	if not os.path.exists(username):
+    	os.makedirs(username)
 	if username not in users:
 		return 'User not exists'
 	elif secret != users[username]['secret']:
