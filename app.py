@@ -8,6 +8,9 @@ import cloudinary
 from cloudinary.uploader import upload as cl_upload
 from cloudinary.utils import cloudinary_url
 from cloudinary.api import delete_resources_by_tag, resources_by_tag
+import urllib
+
+prefix = "https://res.cloudinary.com/htbi9rn2y/raw/upload/"
 
 cloudinary.config( 
   cloud_name = "htbi9rn2y", 
@@ -31,6 +34,13 @@ def upload(file_name, content):
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
 		cl_upload(file_name, resource_type="raw", public_id=file_name)
+
+def download(file_name):
+	f = urllib.URLopener()
+	f.retrieve(prefix + file_name, file_name)
+	with open(file_name) as f:
+		result = json.load(f)
+	return result
 
 @app.route('/files')
 def files():
@@ -138,8 +148,7 @@ def get_users():
 	users_dir = 'users.json'
 	if not os.path.exists(users_dir):
 		upload(users_dir, dict())
-	with open(users_dir) as u:
-		users = json.load(u)
+	users = download(users_dir)
 	return users
 
 def auth(username, password):
@@ -848,16 +857,14 @@ def get_progress(username):
 				for verse in data[book][chapter]:
 					inventory[book][chapter][verse] = 'false'
 		upload(status_dir, inventory)
-	with open(status_dir) as s:
-		status = json.load(s)
+	status = download(status_dir)
 	return status
 
 def get_flashcards(username):
 	flash_dir = username + '/flash.json'
 	if not os.path.exists(flash_dir):
 		upload(flash_dir, dict())
-	with open(flash_dir) as fc:
-		flashcards = json.load(fc)
+	flashcards = download(flash_dir)
 	return flashcards
 
 @app.route('/notes/')
@@ -886,8 +893,8 @@ def get_notes(username):
 	for file_name in os.listdir(note_dir):
 		if file_name[0] == '.':
 			continue
-		with open(note_dir + '/' + file_name) as temp:
-			notes += temp.read() + '\n\n'
+		result = download(note_dir + '/' + file_name)
+		notes += result['reference'] + '\n' + result['content'] + '\n\n'
 	return re.subn('<br>', '\n', notes)[0]
 
 @app.route('/store/')
@@ -965,8 +972,10 @@ def submit(reference='', note='', flag=False, username=''):
 		return render_template('index.html', error='Please log in.')
 	if reference and note:
 		check_note_dir(username)
-		note = reference + '\n' + note + '\n'
-		upload(username + '/notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', note)
+		result = dict()
+		result['reference'] = reference
+		result['content'] = note
+		upload(username + '/notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', result)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 def show_passage(reference, passage, flag=False, username=''):
