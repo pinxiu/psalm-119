@@ -41,18 +41,17 @@ def download(file_name, fallback=dict()):
 		with open(file_name) as f:
 			result = json.load(f)
 		return result
-	except urllib.error.HTTPError as e:
-		if e.code == 404:
-			inventory = dict()
-			if fallback == "progress":
-				for book in data:
-					inventory[book] = dict()
-					for chapter in data[book]:
-						inventory[book][chapter] = dict()
-						for verse in data[book][chapter]:
-							inventory[book][chapter][verse] = 'false'
-			upload(file_name, inventory)
-		return dict()
+	except Exception:
+		inventory = dict()
+		if fallback == "progress":
+			for book in data:
+				inventory[book] = dict()
+				for chapter in data[book]:
+					inventory[book][chapter] = dict()
+					for verse in data[book][chapter]:
+						inventory[book][chapter][verse] = 'false'
+		upload(file_name, inventory)
+		return inventory
 
 @app.route('/files')
 def files():
