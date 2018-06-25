@@ -29,7 +29,7 @@ with open('short_hand.json') as f4:
 def upload(file_name, content):
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
-		cloudinary.uploader.upload(file_name)
+		# cloudinary.uploader.upload(file_name)
 
 @app.route('/files')
 def files():
