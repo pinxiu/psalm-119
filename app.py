@@ -169,7 +169,7 @@ def auth(username, password):
 	secret = get_secret(username, password)
 	users = get_users()
 	if not os.path.exists(username):
-    	os.makedirs(username)
+		os.makedirs(username)
 	if username not in users:
 		return 'User not exists'
 	elif secret != users[username]['secret']:
