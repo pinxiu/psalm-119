@@ -31,6 +31,8 @@ with open('short_hand.json') as f4:
 	short_hand = json.load(f4)
 
 def upload(file_name, content=dict()):
+	if content == dict():
+		content['.ignore'] = 'ignore'
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
 		cl_upload(file_name, resource_type="raw", public_id=file_name)
@@ -57,6 +59,8 @@ def download(file_name, fallback=dict()):
 def files():
 	result = get_users()
 	for user in result:
+		if user[0] == '.':
+			continue
 		result[user]['status.json'] = get_progress(user)
 		result[user]['notes'] = get_notes(user)
 		result[user]['flash.json'] = get_flashcards(user)
@@ -502,6 +506,8 @@ window.onclick = function(event) {
 def show_flashcards(flashcards):
 	html_str = ""
 	for reference in flashcards:
+		if reference[0] == '.':
+			continue
 		passage = find_passage(reference)[1]
 		_, reviewed, score, times = flashcards[reference]
 		html_str += """
@@ -886,6 +892,8 @@ def create_flashcard(reference):
 def display_notes(username):
 	notes = get_notes(username)
 	for timestamp in notes:
+		if timestamp[0] == '.':
+			continue
 		notes += notes[timestamp]['reference'] + '\n' + notes[timestamp]['content'] + '\n\n'
 	return re.subn('<br>', '\n', notes)[0]
 
