@@ -36,8 +36,7 @@ def upload(file_name, content):
 		cl_upload(file_name, resource_type="raw", public_id=file_name)
 
 def download(file_name):
-	f = urllib.URLopener()
-	f.retrieve(prefix + file_name, file_name)
+	urllib.request.urlretrieve(prefix + file_name, file_name)
 	with open(file_name) as f:
 		result = json.load(f)
 	return result
