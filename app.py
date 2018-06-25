@@ -5,6 +5,14 @@ import json
 import re
 import hashlib
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config( 
+  cloud_name = "htbi9rn2y", 
+  api_key = "593376722374363", 
+  api_secret = "Urn2V7cjocJ-XV96TsomUpoMBjQ" 
+)
 
 with open('ESV.json') as f1:
 	data = json.load(f1)
