@@ -52,6 +52,8 @@ def download(file_name, fallback=dict()):
 					inventory[book][chapter] = dict()
 					for verse in data[book][chapter]:
 						inventory[book][chapter][verse] = 'false'
+		else:
+			inventory['.ignore'] = 'let this become a huge file and i will see if the app works'
 		upload(file_name, inventory)
 		return inventory
 
