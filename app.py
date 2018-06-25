@@ -30,16 +30,29 @@ with open('index.json') as f3:
 with open('short_hand.json') as f4:
 	short_hand = json.load(f4)
 
-def upload(file_name, content):
+def upload(file_name, content=dict()):
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
 		cl_upload(file_name, resource_type="raw", public_id=file_name)
 
-def download(file_name):
-	urllib.request.urlretrieve(prefix + file_name, file_name)
-	with open(file_name) as f:
-		result = json.load(f)
-	return result
+def download(file_name, fallback=dict()):
+	try:
+		urllib.request.urlretrieve(prefix + file_name, file_name)
+		with open(file_name) as f:
+			result = json.load(f)
+		return result
+	except urllib.error.HTTPError e:
+		if e.code == 404:
+			inventory = dict()
+			if fallback == "progress":
+				for book in data:
+					inventory[book] = dict()
+					for chapter in data[book]:
+						inventory[book][chapter] = dict()
+						for verse in data[book][chapter]:
+							inventory[book][chapter][verse] = 'false'
+			upload(file_name, inventory)
+		return dict()
 
 @app.route('/files')
 def files():
@@ -104,6 +117,9 @@ def reset_user(username, password, email):
 	secret = get_secret(username, password)
 	users[username]['secret'] = secret
 	upload('users.json', users)
+	get_progress(username)
+	get_notes(username)
+	get_flashcards(username)
 	return ''
 
 def get_secret(username, password):
@@ -125,6 +141,7 @@ def register_user(username, password, email):
 		secret = get_secret(username, password)
 		users[username] = {'secret':secret, 'email':email}
 		upload('users.json', users)
+
 		if not os.path.exists(username):
 			os.makedirs(username)
 		return ''
@@ -145,8 +162,6 @@ def login(username='', password=''):
 
 def get_users():
 	users_dir = 'users.json'
-	if not os.path.exists(users_dir):
-		upload(users_dir, dict())
 	users = download(users_dir)
 	return users
 
@@ -847,22 +862,11 @@ def create_bar(label, value):
 
 def get_progress(username):
 	status_dir = username + '/status.json'
-	if not os.path.exists(status_dir):
-		inventory = dict()
-		for book in data:
-			inventory[book] = dict()
-			for chapter in data[book]:
-				inventory[book][chapter] = dict()
-				for verse in data[book][chapter]:
-					inventory[book][chapter][verse] = 'false'
-		upload(status_dir, inventory)
-	status = download(status_dir)
+	status = download(status_dir, fallback="progress")
 	return status
 
 def get_flashcards(username):
 	flash_dir = username + '/flash.json'
-	if not os.path.exists(flash_dir):
-		upload(flash_dir, dict())
 	flashcards = download(flash_dir)
 	return flashcards
 
@@ -871,7 +875,7 @@ def get_flashcards(username):
 def notes(username=''):
 	if not username:
 		return render_template('index.html', error='Please log in.')
-	return render_template('notes.html', notes=get_notes(username), user=username, email=get_email(username))
+	return render_template('notes.html', notes=display_notes(username), user=username, email=get_email(username))
 
 import os
 from os import listdir
@@ -880,22 +884,17 @@ def create_flashcard(reference):
 	# reference, reviewed, score, visited_times
 	return [reference, False, 0.0, 0]
 
-def check_note_dir(username):
-	note_dir = username + '/notes'
-	if not os.path.exists(note_dir):
-		os.makedirs(note_dir)
-
-def get_notes(username):
-	check_note_dir(username)
-	notes = ''
-	note_dir = username + '/notes'
-	for file_name in os.listdir(note_dir):
-		if file_name[0] == '.':
-			continue
-		result = download(note_dir + '/' + file_name)
-		notes += result['reference'] + '\n' + result['content'] + '\n\n'
+def display_notes(username):
+	notes = get_notes(username)
+	for timestamp in notes:
+		notes += notes[timestamp]['reference'] + '\n' + notes[timestamp]['content'] + '\n\n'
 	return re.subn('<br>', '\n', notes)[0]
 
+def get_notes(username):
+	note_dir = username + '/notes.json'
+	notes = download(note_dir)
+	return notes
+	
 @app.route('/store/')
 @app.route('/store/<reference>/')
 @app.route('/store/<reference>/<flag>/')
@@ -970,11 +969,13 @@ def submit(reference='', note='', flag=False, username=''):
 	if not username:
 		return render_template('index.html', error='Please log in.')
 	if reference and note:
-		check_note_dir(username)
+		note_dir = username + '/notes.json'
+		notes = download(note_dir)
 		result = dict()
 		result['reference'] = reference
 		result['content'] = note
-		upload(username + '/notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', result)
+		notes[datetime.datetime.now())[:-7])] = result
+		upload(note_dir, notes)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 def show_passage(reference, passage, flag=False, username=''):
