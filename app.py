@@ -30,7 +30,7 @@ with open('short_hand.json') as f4:
 def upload(file_name, content):
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
-		cl_upload(file_name, resource_type="raw")
+		cl_upload(file_name, resource_type="raw", public_id=file_name)
 
 @app.route('/files')
 def files():
