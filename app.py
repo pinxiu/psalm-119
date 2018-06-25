@@ -4,6 +4,7 @@ app = Flask(__name__)
 import json
 import re
 import hashlib
+import cloudinary
 
 with open('ESV.json') as f1:
 	data = json.load(f1)
@@ -16,6 +17,11 @@ with open('index.json') as f3:
 
 with open('short_hand.json') as f4:
 	short_hand = json.load(f4)
+
+def upload(file_name, content):
+	with open(file_name, 'w') as f:
+		f.write(json.dumps(content))
+		cloudinary.uploader.upload(file_name)
 
 @app.route('/files')
 def files():
@@ -79,8 +85,7 @@ def reset_user(username, password, email):
 		return 'Email does not match'
 	secret = get_secret(username, password)
 	users[username]['secret'] = secret
-	with open('users.json', 'w') as u:
-		u.write(json.dumps(users))
+	upload('users.json', users)
 	return ''
 
 def get_secret(username, password):
@@ -101,8 +106,7 @@ def register_user(username, password, email):
 	else:
 		secret = get_secret(username, password)
 		users[username] = {'secret':secret, 'email':email}
-		with open('users.json', 'w') as u:
-			u.write(json.dumps(users))
+		upload('users.json', users)
 		if not os.path.exists(username):
 			os.makedirs(username)
 		return ''
@@ -124,8 +128,7 @@ def login(username='', password=''):
 def get_users():
 	users_dir = 'users.json'
 	if not os.path.exists(users_dir):
-		with open(users_dir, 'w') as u:
-			u.write('{}\n')
+		upload(users_dir, dict())
 	with open(users_dir) as u:
 		users = json.load(u)
 	return users
@@ -835,8 +838,7 @@ def get_progress(username):
 				inventory[book][chapter] = dict()
 				for verse in data[book][chapter]:
 					inventory[book][chapter][verse] = 'false'
-		with open(status_dir, 'w') as f2:
-			f2.write(json.dumps(inventory))
+		upload(status_dir, inventory)
 	with open(status_dir) as s:
 		status = json.load(s)
 	return status
@@ -844,8 +846,7 @@ def get_progress(username):
 def get_flashcards(username):
 	flash_dir = username + '/flash.json'
 	if not os.path.exists(flash_dir):
-		with open(flash_dir, 'w') as fc:
-			fc.write('{}\n')
+		upload(flash_dir, dict())
 	with open(flash_dir) as fc:
 		flashcards = json.load(fc)
 	return flashcards
@@ -890,8 +891,7 @@ def store(reference='', flag=False, username=''):
 	flashcards = get_flashcards(username)
 	if reference and reference not in flashcards:
 		flashcards[reference] = create_flashcard(reference)
-		with open(username + '/flash.json', 'w') as o:
-			o.write(json.dumps(flashcards))
+		upload(username + '/flash.json', flashcards)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 @app.route('/check/')
@@ -913,8 +913,7 @@ def check(reference='', username=''):
 				check_book(status, book2, chapter2=chapter2, verse2=verse2)
 		else:
 			check_book(status, book1, chapter1, verse1, chapter1, verse1)
-	with open(username + '/status.json', 'w') as o:
-		o.write(json.dumps(status))
+	upload(username + '/status.json', status)
 	return redirect('/' + username)
 
 def check_book(status, book, chapter1=None, verse1=None, chapter2=None, verse2=None):
@@ -957,9 +956,8 @@ def submit(reference='', note='', flag=False, username=''):
 		return render_template('index.html', error='Please log in.')
 	if reference and note:
 		check_note_dir(username)
-		note = reference + '\n' + note
-		with open(username + '/notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', 'w') as f0:
-			f0.write(note)
+		note = reference + '\n' + note + '\n'
+		upload(username + '/notes/' + re.subn('\W', '_', reference + '_' + str(datetime.datetime.now())[:-7])[0] + '.txt', note)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 def show_passage(reference, passage, flag=False, username=''):
