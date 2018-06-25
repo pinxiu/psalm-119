@@ -4,8 +4,7 @@ app = Flask(__name__)
 import json
 import re
 import hashlib
-import cloudinary
-from cloudinary.uploader import cl_upload
+from cloudinary.uploader import upload as cl_upload
 from cloudinary.utils import cloudinary_url
 from cloudinary.api import delete_resources_by_tag, resources_by_tag
 
