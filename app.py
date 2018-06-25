@@ -5,8 +5,9 @@ import json
 import re
 import hashlib
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+from cloudinary.uploader import cl_upload
+from cloudinary.utils import cloudinary_url
+from cloudinary.api import delete_resources_by_tag, resources_by_tag
 
 cloudinary.config( 
   cloud_name = "htbi9rn2y", 
@@ -29,7 +30,7 @@ with open('short_hand.json') as f4:
 def upload(file_name, content):
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
-		cloudinary.uploader.upload(file_name, :resource_type => :raw)
+		cl_upload(file_name, resource_type="raw")
 
 @app.route('/files')
 def files():
