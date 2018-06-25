@@ -41,7 +41,7 @@ def download(file_name, fallback=dict()):
 		with open(file_name) as f:
 			result = json.load(f)
 		return result
-	except urllib.error.HTTPError e:
+	except urllib.error.HTTPError as e:
 		if e.code == 404:
 			inventory = dict()
 			if fallback == "progress":
