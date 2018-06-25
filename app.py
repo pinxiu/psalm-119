@@ -64,7 +64,7 @@ def files():
 		if user[0] == '.':
 			continue
 		result[user]['status.json'] = get_progress(user)
-		result[user]['notes'] = get_notes(user)
+		result[user]['notes.json'] = get_notes(user)
 		result[user]['flash.json'] = get_flashcards(user)
 	return json.dumps(result)
 
@@ -892,11 +892,12 @@ def create_flashcard(reference):
 
 def display_notes(username):
 	notes = get_notes(username)
+	result = ''
 	for timestamp in notes:
 		if timestamp[0] == '.':
 			continue
-		notes += notes[timestamp]['reference'] + '\n' + notes[timestamp]['content'] + '\n\n'
-	return re.subn('<br>', '\n', notes)[0]
+		result += notes[timestamp]['reference'] + '\n' + notes[timestamp]['content'] + '\n\n'
+	return re.subn('<br>', '\n', result)[0]
 
 def get_notes(username):
 	note_dir = username + '/notes.json'
