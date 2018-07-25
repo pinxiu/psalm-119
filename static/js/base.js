@@ -42,3 +42,29 @@ function change(reference, user) {
 		location.href = window.location.origin + "/search/" + reference + '/false/' + user;
 	}
 }
+function checkAns() {
+    var key = document.getElementById('key').innerHTML;
+    var ans = document.getElementById('ans').value;
+    if (ans != key.substring(0, ans.length)) {
+        document.getElementById('mark').innerHTML = '&#10008';
+    } else if (ans.length == key.length) {
+        document.getElementById('mark').innerHTML = '&#10004';
+    } else {
+        document.getElementById('mark').innerHTML = '&#9997';
+    }
+}
+
+function showAns() {
+    if (document.getElementById('showAns').value == 'Show Answer') {
+        document.getElementById('showAns').value = 'Hide Answer';
+        document.getElementById('key').style = "width:500px; visibility:visible";
+    } else {
+        document.getElementById('showAns').value = 'Show Answer';
+        document.getElementById('key').style = "width:500px; visibility:hidden";
+    }
+}
+
+function setHeight(field){
+  document.getElementById(field).style.height = "106px";
+  document.getElementById(field).style.height = (document.getElementById(field).scrollHeight)+'px';
+}

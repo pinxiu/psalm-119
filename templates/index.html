@@ -14,6 +14,7 @@
   <a href="/notes/{{user}}">Notes</a>
   <a href="/progress/{{user}}">Progress</a>
   <a href="/flashcards/{{user}}">Flashcards</a>
+  <a href="/quiz/{{user}}">Quiz</a>
   <a href="/help/{{user}}">Help</a>
   {% if user %}
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="{{user}}">
@@ -138,7 +139,7 @@ window.onclick = function(event) {
   {% if reference %}
 
   <div class='column-r'>
-      <div><textarea id="note" cols="50" rows="5" onkeyup="setHeight();" onkeydown="setHeight();"></textarea></div>
+      <div><textarea id="note" cols="50" rows="5" onkeyup="setHeight('note');"></textarea></div>
       <div><input type="button" onclick="submit('{{reference}}', '{{user}}')" value="Submit"></div>
   </div>
 
@@ -154,15 +155,6 @@ window.onclick = function(event) {
     <input type="button" onclick="check('{{reference}}', '{{user}}')" value="Finished Reading">
 
   </div>
-
-  
-
-  <script type="text/javascript">
-    function setHeight(){
-      document.getElementById('note').style.height = "106px";
-      document.getElementById('note').style.height = (document.getElementById('note').scrollHeight)+'px';
-    }
-  </script>
 
   {% endif %}
 
