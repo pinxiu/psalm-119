@@ -921,8 +921,10 @@ body {
 }
 
 .container {
-	margin: auto;
-	margin-bottom: 30px;
+  height:120px;
+  width:600px;
+  margin:auto;
+  position:relative;
 }
 
 /* Add a black background color to the top navigation */
@@ -988,7 +990,6 @@ button:hover {
 
 textarea {
   white-space: pre-line;
-  margin-top: 20px;
   text-align: left;
   resize: vertical;
   overflow: hidden;
@@ -998,127 +999,98 @@ textarea {
   font-size: 16px;
   font-family: 'Open Sans', sans-serif;
 }
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    padding-top: 60px;
-}
+	/* The Modal (background) */
+	.modal {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+		padding-top: 60px;
+	}
 
-/* The Close Button */
-.close {
-	/* Position it in the top right corner outside of the modal */
-	position: relative;
-	right: -55px;
-	top: -25px;
-	font-weight: 300;
-	font-size: 16px;
-	font-family: 'Open Sans', sans-serif;
-	text-shadow: none;
-	opacity: 1.0;
-}
+	/* The Close Button */
+	.close {
+		/* Position it in the top right corner outside of the modal */
+		position: relative;
+		right: -375px;
+		top: -5px;
+		font-weight: 300;
+		font-size: 16px;
+		font-family: 'Open Sans', sans-serif;
+		text-shadow: none;
+		opacity: 1.0;
+	}
 
-/* Close button on hover */
-.close:hover,
-.close:focus {
-    color: #4CAF50;
-    cursor: pointer;
-}
+	/* Close button on hover */
+	.close:hover,
+	.close:focus {
+		color: #4CAF50;
+		cursor: pointer;
+	}
 
-/* Add Zoom Animation */
-.animate {
-    -webkit-animation: animatezoom 0.6s;
-    animation: animatezoom 0.6s
-}
+	/* Add Zoom Animation */
+	.animate {
+		-webkit-animation: animatezoom 0.6s;
+		animation: animatezoom 0.6s
+	}
 
-@-webkit-keyframes animatezoom {
-    from {-webkit-transform: scale(0)} 
-    to {-webkit-transform: scale(1)}
-}
+	@-webkit-keyframes animatezoom {
+		from {-webkit-transform: scale(0)} 
+		to {-webkit-transform: scale(1)}
+	}
 
-@keyframes animatezoom {
-    from {transform: scale(0)} 
-    to {transform: scale(1)}
-}
+	@keyframes animatezoom {
+		from {transform: scale(0)} 
+		to {transform: scale(1)}
+	}
 
-.login-page {
-  width: 360px;
-  padding: 8% 0 0;
-  margin: auto;
-}
-.form {
-  position: relative;
-  z-index: 1;
-  background: #FFFFFF;
-  max-width: 360px;
-  margin: 0 auto 100px;
-  padding: 45px;
-  text-align: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-}
-.form input {
-  outline: 0;
-  background: #f2f2f2;
-  width: 100%;
-  border: 0;
-  margin: 0 0 15px;
-  padding: 15px;
-  box-sizing: border-box;
-}
-.form button {
-  outline: 0;
-  background: #4CAF50;
-  width: 100%;
-  border: 0;
-  padding: 15px;
-  color: #FFFFFF;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.form button:hover,.form button:active,.form button:focus {
-  background: #43A047;
-}
+	.login-page {
+	  width: 360px;
+	  padding: 8% 0 0;
+	  margin: auto;
+	}
+	.form {
+	  position: relative;
+	  z-index: 1;
+	  background: #FFFFFF;
+	  max-width: 360px;
+	  margin: 0 auto 100px;
+	  padding: 45px;
+	  text-align: center;
+	  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+	}
+	.form input {
+	  outline: 0;
+	  background: #f2f2f2;
+	  width: 100%;
+	  border: 0;
+	  margin: 0 0 15px;
+	  padding: 15px;
+	  box-sizing: border-box;
+	}
+	.form button {
+	  outline: 0;
+	  background: #4CAF50;
+	  width: 100%;
+	  border: 0;
+	  padding: 15px;
+	  color: #FFFFFF;
+	  -webkit-transition: all 0.3 ease;
+	  transition: all 0.3 ease;
+	  cursor: pointer;
+	}
+	.form button:hover,.form button:active,.form button:focus {
+	  background: #43A047;
+	}
 </style>
 </head>
 <body>
-
-<div id="login" class="modal">
-  <!-- Modal Content -->
-  <div class="animate">
-    <div class="login-page">
-      <span onclick="document.getElementById('login').style.display='none'" 
-class="close" title="Close Modal">Close</span>
-      <div class="form">
-        <form class="logout-form" action="/logout">
-		  <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
-          <button>Log Out</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<script>
-// Get the modal
-var modal = document.getElementById('login');
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-</script>
 
 <div class="topnav">
   <a href="/"""+username+"""">Reading</a>
@@ -1129,7 +1101,43 @@ window.onclick = function(event) {
   <a href="/help/"""+username+"""">Help</a>"""
 	html_str += """
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
+				"""
+	html_str += """
 </div>
+				"""
+	html_str += """
+
+<div id="login" class="modal">
+
+  <!-- Modal Content -->
+  <div class="animate">
+	<div class="login-page">
+	  <span onclick="document.getElementById('login').style.display='none'" 
+class="close" title="Close Modal">Close</span>
+	  <div class="form">
+		<form class="logout-form" action="/logout">
+		  <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
+		  <button>Log Out</button>
+		</form>
+	  </div>
+	</div>
+  </div>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById('login');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
+}
+</script>
+				"""
+
+	html_str += """
 
 <div class="main">
 
