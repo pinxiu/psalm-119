@@ -4,19 +4,19 @@ app = Flask(__name__)
 import json
 import re
 import hashlib
-import cloudinary
-from cloudinary.uploader import upload as cl_upload
-from cloudinary.utils import cloudinary_url
-from cloudinary.api import delete_resources_by_tag, resources_by_tag
+# import cloudinary
+# from cloudinary.uploader import upload as cl_upload
+# from cloudinary.utils import cloudinary_url
+# from cloudinary.api import delete_resources_by_tag, resources_by_tag
 import urllib
 
-prefix = "https://res.cloudinary.com/htbi9rn2y/raw/upload/"
+# prefix = "https://res.cloudinary.com/htbi9rn2y/raw/upload/"
 
-cloudinary.config( 
-  cloud_name = "htbi9rn2y", 
-  api_key = "593376722374363", 
-  api_secret = "Urn2V7cjocJ-XV96TsomUpoMBjQ" 
-)
+# cloudinary.config( 
+#   cloud_name = "htbi9rn2y", 
+#   api_key = "593376722374363", 
+#   api_secret = "Urn2V7cjocJ-XV96TsomUpoMBjQ" 
+# )
 
 with open('ESV.json') as f1:
 	data = json.load(f1)
@@ -31,15 +31,15 @@ with open('short_hand.json') as f4:
 	short_hand = json.load(f4)
 
 def upload(file_name, content=dict()):
-	if content == dict():
-		content['.ignore'] = 'ignore'
+	# if content == dict():
+	# 	content['.ignore'] = 'ignore'
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
-		cl_upload(file_name, resource_type="raw", public_id=file_name)
+		# cl_upload(file_name, resource_type="raw", public_id=file_name)
 
 def download(file_name, fallback=dict()):
 	try:
-		urllib.request.urlretrieve(prefix + file_name, file_name)
+		# urllib.request.urlretrieve(prefix + file_name, file_name)
 		with open(file_name) as f:
 			result = json.load(f)
 		return result
@@ -52,8 +52,8 @@ def download(file_name, fallback=dict()):
 					inventory[book][chapter] = dict()
 					for verse in data[book][chapter]:
 						inventory[book][chapter][verse] = 'false'
-		else:
-			inventory['.ignore'] = data
+		# else:
+		# 	inventory['.ignore'] = data
 		upload(file_name, inventory)
 		return inventory
 
