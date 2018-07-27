@@ -143,9 +143,6 @@ def register_user(username, password, email):
 		secret = get_secret(username, password)
 		users[username] = {'secret':secret, 'email':email}
 		upload('users.json', users)
-		get_progress(username)
-		get_notes(username)
-		get_flashcards(username)
 		return ''
 
 @app.route('/logout')

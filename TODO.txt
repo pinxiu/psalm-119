@@ -13,3 +13,36 @@
 27.improve note submission strategy (vs. using param=note)
 28.add security protection on user reg/auth
 29.fix cloudinary path (.ignore etc; empty file etc.)
+30.fix flashcard/quiz float above navbar when scroll downs
+
+DEBUG 2:
+Romans 13:9 missing "For" in the beginning of the sentence.
+
+DEBUG 1:
+2018-07-25T22:21:53.379104+00:00 heroku[router]: at=info method=GET path="/submit/Romans%2013:9-10/Missing%20%22For%22%20in%20the%20beginning%20of%20v9./false/pinxiu" host=psalm-119.herokuapp.com request_id=8f484ea5-50a3-4753-af67-2744dfaad04e fwd="38.77.204.66" dyno=web.1 connect=1ms service=19ms status=500 bytes=456 protocol=https
+2018-07-25T22:21:53.369403+00:00 app[web.1]: [2018-07-25 22:21:53,368] ERROR in app: Exception on /submit/Romans 13:9-10/Missing "For" in the beginning of v9./false/pinxiu [GET]
+2018-07-25T22:21:53.369423+00:00 app[web.1]: Traceback (most recent call last):
+2018-07-25T22:21:53.369429+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/site-packages/flask/app.py", line 2292, in wsgi_app
+2018-07-25T22:21:53.369431+00:00 app[web.1]: response = self.full_dispatch_request()
+2018-07-25T22:21:53.369433+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/site-packages/flask/app.py", line 1815, in full_dispatch_request
+2018-07-25T22:21:53.369434+00:00 app[web.1]: rv = self.handle_user_exception(e)
+2018-07-25T22:21:53.369436+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/site-packages/flask/app.py", line 1718, in handle_user_exception
+2018-07-25T22:21:53.369438+00:00 app[web.1]: reraise(exc_type, exc_value, tb)
+2018-07-25T22:21:53.369439+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/site-packages/flask/_compat.py", line 35, in reraise
+2018-07-25T22:21:53.369441+00:00 app[web.1]: raise value
+2018-07-25T22:21:53.369444+00:00 app[web.1]: rv = self.dispatch_request()
+2018-07-25T22:21:53.369442+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+2018-07-25T22:21:53.369446+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+2018-07-25T22:21:53.369448+00:00 app[web.1]: return self.view_functions[rule.endpoint](**req.view_args)
+2018-07-25T22:21:53.369449+00:00 app[web.1]: File "/app/app.py", line 1300, in submit
+2018-07-25T22:21:53.369451+00:00 app[web.1]: upload(note_dir, notes)
+2018-07-25T22:21:53.369453+00:00 app[web.1]: File "/app/app.py", line 37, in upload
+2018-07-25T22:21:53.369455+00:00 app[web.1]: f.write(json.dumps(content))
+2018-07-25T22:21:53.369458+00:00 app[web.1]: return _default_encoder.encode(obj)
+2018-07-25T22:21:53.369457+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/json/__init__.py", line 231, in dumps
+2018-07-25T22:21:53.369460+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/json/encoder.py", line 199, in encode
+2018-07-25T22:21:53.369461+00:00 app[web.1]: chunks = self.iterencode(o, _one_shot=True)
+2018-07-25T22:21:53.369463+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.6/json/encoder.py", line 257, in iterencode
+2018-07-25T22:21:53.369465+00:00 app[web.1]: return _iterencode(o, 0)
+2018-07-25T22:21:53.372423+00:00 app[web.1]: TypeError: keys must be a string
+2018-07-25T22:21:53.377841+00:00 app[web.1]: 10.33.235.94 - - [25/Jul/2018:22:21:53 +0000] "GET /submit/Romans%2013:9-10/Missing%20%22For%22%20in%20the%20beginning%20of%20v9./false/pinxiu HTTP/1.1" 500 291 "https://psalm-119.herokuapp.com/search/Romans%2013:9-10/false/pinxiu" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
