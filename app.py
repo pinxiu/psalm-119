@@ -1150,7 +1150,13 @@ window.onclick = function(event) {
 	<div>
 	    <p style="width:500px;">"""+reference+"""</p>
 	    <textarea cols="60" rows="5" onkeyup="setHeight('ans"""+str(counter)+"""');" id='ans"""+str(counter)+"""' type="text" oninput="checkAns('"""+str(counter)+"""')"></textarea>
-	    <p id='mark"""+str(counter)+"""'>&#9997</p>
+    	<p>
+    		<label id='mark"""+str(counter)+"""'>&#9997</label>
+    		&nbsp;&nbsp;
+    		<input id='case"""+str(counter)+"""' type="checkbox" checked oninput="checkAns('"""+str(counter)+"""')"> Case Sensitive
+    		&nbsp;&nbsp;&nbsp;
+    		<input id='punc"""+str(counter)+"""' type="checkbox" checked oninput="checkAns('"""+str(counter)+"""')"> Punctuation Sensitive 
+    	</p>
 	    <input id='showAns"""+str(counter)+"""' type="button" onclick="showAns('"""+str(counter)+"""')" value='Show Answer'>
 	    <p style="width:500px; visibility:hidden" id='key"""+str(counter)+"""'>"""+quiz_info[reference]+"""</p>
 	    <hr>
@@ -1165,6 +1171,20 @@ window.onclick = function(event) {
 function checkAns(index) {
     var key = document.getElementById('key'+index).innerHTML;
     var ans = document.getElementById('ans'+index).value;
+    var puncS = document.getElementById('punc'+index).checked;
+    var caseS = document.getElementById('case'+index).checked;
+    key = key.trim();
+    ans = ans.trim();
+    if (!puncS) {
+    	key = key.replace(/[^\w\s]|_/g, "")
+         		 .replace(/\s+/g, " ");
+        ans = ans.replace(/[^\w\s]|_/g, "")
+         		 .replace(/\s+/g, " ");
+    }
+    if (!caseS) {
+    	key = key.toLowerCase();
+    	ans = ans.toLowerCase();
+    }
     if (ans != key.substring(0, ans.length)) {
         document.getElementById('mark'+index).innerHTML = '&#10008';
     } else if (ans.length == key.length) {
