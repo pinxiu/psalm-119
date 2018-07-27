@@ -23,7 +23,6 @@
 New Features:
 1. fix notes
 2. for progress, different color than red; black background, white words, blue and yellow and ___
-3. flash: fix top part that goes over menu
 4. flash: have table of content on left or right
 5. flash: aligned either alphabetical or numerical order or random
 7. friends option: see friends' progress
