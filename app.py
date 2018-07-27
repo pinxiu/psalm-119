@@ -116,9 +116,9 @@ def reset():
 def reset_user(username, password, email):
 	users = get_users()
 	if username not in users:
-		return 'User not exists'
+		return 'User does not exist.'
 	elif email != users[username]['email']:
-		return 'Email does not match'
+		return 'Email does not match.'
 	secret = get_secret(username, password)
 	users[username]['secret'] = secret
 	upload('users.json', users)

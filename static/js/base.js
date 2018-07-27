@@ -22,8 +22,10 @@ function submit(reference, user) {
 }
 function feed(user) {
     var note = document.getElementById('note').value;
-    if (note)
+    if (note) {
         location.href = window.location.origin + "/feed/" + note + '/' + user;
+        alert("Thanks for the feedback!");
+    }
 }
 function check(reference, user) {
     if (reference)
