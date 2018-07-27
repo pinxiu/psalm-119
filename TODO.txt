@@ -8,8 +8,6 @@
 19.web/phone app ui (size by screen size)
 20.maintain content upon git push
 22.remove/order flash cards
-23.implement quiz
-24.fix difference between effects of render_template and html_str (top bar slightly taller)
 27.improve note submission strategy (vs. using param=note)
 28.add security protection on user reg/auth
 29.fix cloudinary path (.ignore etc; empty file etc.)
@@ -19,6 +17,7 @@
 33.add "ex:ro1:2-3" below "search" in index.html
 34.quiz: feature to generate quiz via search bar w/o flashcards
 35.regroup files
+36."both to Greek " not shown as error (should be "Greeks")
 
 New Features:
 1. fix notes
