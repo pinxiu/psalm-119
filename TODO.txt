@@ -15,6 +15,21 @@
 29.fix cloudinary path (.ignore etc; empty file etc.)
 30.fix flashcard/quiz float above navbar when scroll downs
 
+New Features:
+1. fix notes
+2. for progress, different color than red; black background, white words, blue and yellow and ___
+3. flash: fix top part that goes over menu
+4. flash: have table of content on left or right
+5. flash: aligned either alphabetical or numerical order or random
+6. quiz: option for no punctuation or lower/upper case
+7. friends option: see friends' progress
+8. have different versions of the bible
+9. for progress, have a table of content
+10.for reading: pre-list of the bible books to click on
+11.flash: delete flashcards
+12.flash: group flashcards (e.g. automatically by book) and name groups, add tags/labels
+13.user feedback/comment/suggestion
+
 DEBUG 2:
 Romans 13:9 missing "For" in the beginning of the sentence.
 

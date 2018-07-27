@@ -1293,7 +1293,7 @@ def submit(reference='', note='', flag=False, username=''):
 		result = dict()
 		result['reference'] = reference
 		result['content'] = note
-		notes[datetime.datetime.now()] = result
+		notes[str(datetime.datetime.now())] = result
 		upload(note_dir, notes)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
