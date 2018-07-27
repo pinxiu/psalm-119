@@ -440,7 +440,8 @@ def display_flashcards(username):
   <a href="/progress/"""+username+"""">Progress</a>
   <a class="active" href="/flashcards/"""+username+"""">Flashcards</a>
   <a href="/quiz/"""+username+"""">Quiz</a>
-  <a href="/help/"""+username+"""">Help</a>"""
+  <a href="/help/"""+username+"""">Help</a>
+  <a href="/feedback/"""+username+"""">Feedback</a>"""
 	html_str += """
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
 				"""
@@ -752,7 +753,8 @@ def display_progress(username):
   <a class="active" href="/progress/"""+username+"""">Progress</a>
   <a href="/flashcards/"""+username+"""">Flashcards</a>
   <a href="/quiz/"""+username+"""">Quiz</a>
-  <a href="/help/"""+username+"""">Help</a>"""
+  <a href="/help/"""+username+"""">Help</a>
+  <a href="/feedback/"""+username+"""">Feedback</a>"""
 	html_str += """
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
 				"""
@@ -1095,7 +1097,8 @@ textarea {
   <a href="/progress/"""+username+"""">Progress</a>
   <a href="/flashcards/"""+username+"""">Flashcards</a>
   <a class="active" href="/quiz/"""+username+"""">Quiz</a>
-  <a href="/help/"""+username+"""">Help</a>"""
+  <a href="/help/"""+username+"""">Help</a>
+  <a href="/feedback/"""+username+"""">Feedback</a>"""
 	html_str += """
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
 				"""
@@ -1296,6 +1299,35 @@ def submit(reference='', note='', flag=False, username=''):
 		notes[str(datetime.datetime.now())] = result
 		upload(note_dir, notes)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
+
+@app.route('/feed/')
+@app.route('/feed/<note>/')
+@app.route('/feed/<note>/<username>')
+def feed(note='', username=''):
+	if note:
+		feed_dir = 'feedback.json'
+		feed = download(feed_dir)
+		result = dict()
+		result['username'] = username
+		result['content'] = note
+		feed[str(datetime.datetime.now())] = result
+		upload(feed_dir, feed)
+	return redirect('/feedback/' + username)
+
+@app.route('/feedback/')
+@app.route('/feedback/<username>')
+def feedback(username=''):
+	return render_template('feedback.html', user=username, email=get_email(username))
+
+@app.route('/view')
+def view():
+	result = get_feedback()
+	return json.dumps(result)
+
+def get_feedback():
+	feed_dir = 'feedback.json'
+	feed = download(feed_dir)
+	return feed
 
 def show_passage(reference, passage, flag=False, username=''):
 	if flag:

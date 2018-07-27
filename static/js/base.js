@@ -20,6 +20,11 @@ function submit(reference, user) {
     if (reference && note)
 	    location.href = window.location.origin + "/submit/" + reference + '/' + note + '/' + flag + '/' + user;
 }
+function feed(user) {
+    var note = document.getElementById('note').value;
+    if (note)
+        location.href = window.location.origin + "/feed/" + note + '/' + user;
+}
 function check(reference, user) {
     if (reference)
 	    location.href = window.location.origin + "/check/" + reference + '/' + user;

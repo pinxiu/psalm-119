@@ -5,6 +5,7 @@
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 <script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
 </head>
 <body>
 
@@ -14,8 +15,8 @@
   <a href="/progress/{{user}}">Progress</a>
   <a href="/flashcards/{{user}}">Flashcards</a>
   <a href="/quiz/{{user}}">Quiz</a>
-  <a class="active" href="/help/{{user}}">Help</a>
-  <a href="/feedback/{{user}}">Feedback</a>
+  <a href="/help/{{user}}">Help</a>
+  <a class="active" href="/feedback/{{user}}">Feedback</a>
   {% if user %}
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value="{{user}}">
   {% else %}
@@ -116,42 +117,15 @@ window.onclick = function(event) {
 
 <div class="main">
 
-<div>
-	<h2>Reading:</h2>
-	<p>Type in reference, e.g. 2tim1:2--2:1, and press ENTER or click "Search".</p>
-	<p>Click "Show/Hide Verse Number" to show/hide verse number.</p>
-	<p>Click "Add to Flashcards" to add this verse/passage to your Flashcards.</p>
-	<p>Click "Finish Reading" to mark this verse/passage as read.</p>
-	<p>You can also submit a note corresponding to this verse/passage.</p>
-</div>
 
-<div>
-	<h2>Notes:</h2>
-	<p>Your notes are displayed here.</p>
-</div>
-
-<div>
-	<h2>Progress:</h2>
-	<p>Your reading progress is displayed here.</p>
-</div>
-
-<div>
-	<h2>Flashcards:</h2>
-	<p>Your flashcards are displayed here. Click on the flashcards to see the other side.</p>
-</div>
-
-<div>
-  <h2>Quiz:</h2>
-  <p>Write down the verse in the text area. Click on "Show Answer" to see the passage. The small icon below the text area indicates whether you have made a mistake, or have not finished, or have finished correctly.</p>
-</div>
-
-<div>
-  
-  
+  <div>
+      <div><textarea id="note" cols="100" rows="5" onkeyup="setHeight('note');"></textarea></div>
+      <div><input type="button" onclick="feed('{{user}}')" value="Submit"></div>
+  </div>
 
 </div>
 
-</div>
+<script src="{{ url_for('static',filename='js/base.js') }}"></script>
 
 </body>
 </html>

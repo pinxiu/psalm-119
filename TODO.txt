@@ -9,11 +9,12 @@
 20.maintain content upon git push
 22.remove/order flash cards
 23.implement quiz
-24.fix difference between effects of render_template and html_str
+24.fix difference between effects of render_template and html_str (top bar slightly taller)
 27.improve note submission strategy (vs. using param=note)
 28.add security protection on user reg/auth
 29.fix cloudinary path (.ignore etc; empty file etc.)
 30.fix flashcard/quiz float above navbar when scroll downs
+31.fix conflict: baseURL/feedback could mean user "feedback" or view feedback
 
 New Features:
 1. fix notes
@@ -28,10 +29,8 @@ New Features:
 10.for reading: pre-list of the bible books to click on
 11.flash: delete flashcards
 12.flash: group flashcards (e.g. automatically by book) and name groups, add tags/labels
-13.user feedback/comment/suggestion
-
-DEBUG 2:
-Romans 13:9 missing "For" in the beginning of the sentence.
+14.for notes: grouping by something
+15:for notes: do search
 
 DEBUG 1:
 2018-07-25T22:21:53.379104+00:00 heroku[router]: at=info method=GET path="/submit/Romans%2013:9-10/Missing%20%22For%22%20in%20the%20beginning%20of%20v9./false/pinxiu" host=psalm-119.herokuapp.com request_id=8f484ea5-50a3-4753-af67-2744dfaad04e fwd="38.77.204.66" dyno=web.1 connect=1ms service=19ms status=500 bytes=456 protocol=https
