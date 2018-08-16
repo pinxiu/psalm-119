@@ -282,9 +282,9 @@ def display_flashcards(username):
 	}
 
 .wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
 }
 
 	.container {
@@ -440,76 +440,76 @@ def display_flashcards(username):
 	}
 
 #sidebar {
-    min-width: 100px;
-    max-width: 100px;
-    height: 100%;
-    background: #121212;
-    color: #fff;
-    transition: all 0.3s;
-    position: fixed;
-    z-index: 1;
-    overflow: scroll;
+	min-width: 100px;
+	max-width: 100px;
+	height: 100%;
+	background: #121212;
+	color: #fff;
+	transition: all 0.3s;
+	position: fixed;
+	z-index: 1;
+	overflow: scroll;
 }
 
 /* Shrinking the sidebar from 250px to 80px and center aligining its content*/
 #sidebar.active {
-    min-width: 250px;
-    max-width: 250px;
+	min-width: 250px;
+	max-width: 250px;
 }
 
 /* Toggling the sidebar header content, hide the big heading [h3] and showing the small heading [strong] and vice versa*/
 #sidebar .sidebar-header h6 {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-header strong {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-header h6 {
-    display: block;
+	display: block;
 }
 
 #sidebar .sidebar-option .big {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-option .small {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-option .big {
-    display: block;
+	display: block;
 }
 
 #sidebar ul li a {
-    text-align: left;
+	text-align: left;
 }
 
 #sidebar.active ul li a {
-    padding: 20px 10px;
-    text-align: center;
-    font-size: 0.85em;
+	padding: 20px 10px;
+	text-align: center;
+	font-size: 0.85em;
 }
 
 #sidebar.active ul li a i {
-    margin-right:  0;
-    display: block;
-    font-size: 0.85em;
-    margin-bottom: 5px;
+	margin-right:  0;
+	display: block;
+	font-size: 0.85em;
+	margin-bottom: 5px;
 }
 
 /* Same dropdown links padding*/
 #sidebar.active ul ul a {
-    padding: 10px !important;
+	padding: 10px !important;
 }
 
 /* Changing the arrow position to bottom center position, 
    translateX(50%) works with right: 50% 
    to accurately  center the arrow */
 #sidebar.active .dropdown-toggle::after {
-    top: auto;
-    bottom: 10px;
-    right: 50%;
-    -webkit-transform: translateX(50%);
-    -ms-transform: translateX(50%);
-    transform: translateX(50%);
+	top: auto;
+	bottom: 10px;
+	right: 50%;
+	-webkit-transform: translateX(50%);
+	-ms-transform: translateX(50%);
+	transform: translateX(50%);
 }
 
 </style>
@@ -568,72 +568,72 @@ window.onclick = function(event) {
 
 <div class="wrapper">
 
-    <!-- Sidebar  -->
-    <nav id="sidebar">
-        <div align="middle" class="sidebar-header">
-        	<div style="margin:5px;" id="sidebarCollapse">
-        		<h6><i  class="fas fa-align-left"></i>&nbsp;&nbsp;
-            	Table of Content</h6>
-	            <strong><i  class="fas fa-align-left"></i>
-            	Table</strong>
-	        </div>
-        </div>
+	<!-- Sidebar  -->
+	<nav id="sidebar">
+		<div align="middle" class="sidebar-header">
+			<div style="margin:5px;" id="sidebarCollapse">
+				<h6><i  class="fas fa-align-left"></i>&nbsp;&nbsp;
+				Table of Content</h6>
+				<strong><i  class="fas fa-align-left"></i>
+				Table</strong>
+			</div>
+		</div>
 
-        <div class="sidebar-option" style="font-size:14px;margin-left:5px;">
-        	<form id="orderStyle"">
+		<div class="sidebar-option" style="font-size:14px;margin-left:5px;">
+			<form id="orderStyle"">
 			  <input type="radio" name="ordering" id="inorder" oninput="reorder();" checked> Sorted &nbsp &nbsp
 			  <input type="radio" name="ordering" id="random" oninput="reorder();"> Random
 			</form>
 		</div>
 
-        <ul class="list-unstyled components" style="font-size:14px;margin-left:5px;">
-            <li class="active">
-                <ul class="list-unstyled" id="allLinks">
-                """
+		<ul class="list-unstyled components" style="font-size:14px;margin-left:5px;">
+			<li class="active">
+				<ul class="list-unstyled" id="allLinks">
+				"""
 	inventory = book_sort(flashcards)
 	for book in sorted(inventory, lambda x: order[x]):
 		html_str += """
-	                    <li>
-	                    	<a style="color:white;" href='#"""+book+"""' data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-			                    """+book+"""
-			                </a>
-			                <ul class="collapse list-unstyled" id='"""+book+"""'>
-			    	"""
+						<li>
+							<a style="color:white;" href='#"""+book+"""' data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+								"""+book+"""
+							</a>
+							<ul class="collapse list-unstyled" id='"""+book+"""'>
+					"""
 		for chapter in sorted(inventory[book]):
 			html_str += """
 								<li>
 									<a style="color:white;margin-left:10px;" href='#"""+book + str(chapter)+"""' data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-					                    ch. """+str(chapter)+"""
-					                </a>
-					                <ul class="collapse list-unstyled" id='"""+book + str(chapter)+"""'>
-					    """
+										ch. """+str(chapter)+"""
+									</a>
+									<ul class="collapse list-unstyled" id='"""+book + str(chapter)+"""'>
+						"""
 			for verse in sorted(inventory[book][chapter]):
 				reference = inventory[book][chapter][verse]
 				html_str += """
 										<li>
 											<a style="color:white;margin-left:20px;" href='#"""+reference+"""'>
-							                    """+re.subn(book + ' ', '', reference)[0]+"""
-							                </a>
-							            </li>
-						    """
+												"""+re.subn(book + ' ', '', reference)[0]+"""
+											</a>
+										</li>
+							"""
 			html_str += """
 									</ul>
 								</li>
 						"""
 		html_str += """
-			                </ul>
-	                    </li>
-                    """
+							</ul>
+						</li>
+					"""
 	html_str += """
-                </ul>
-            </li>
-        </ul>
+				</ul>
+			</li>
+		</ul>
 
-    </nav>
+	</nav>
 
 	<div id="content">
-    	<div class="container">
-    			<div id="ordered_cards">
+		<div class="container">
+				<div id="ordered_cards">
 				"""
 				
 	html_str += show_flashcards(flashcards, "ordered")
@@ -652,11 +652,11 @@ window.onclick = function(event) {
 </div>
 
 	<!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<!-- Popper.JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+	<!-- Bootstrap JS -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
 	$(".flippable").click(function(){
@@ -672,9 +672,9 @@ function reorder() {
 
 $(document).ready(function () {
 
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
+	$('#sidebarCollapse').on('click', function () {
+		$('#sidebar').toggleClass('active');
+	});
 
 });
 </script>
@@ -1116,8 +1116,8 @@ body {
 
 /* Main content */
 .main {
-    margin: 20px;
-    margin-top: 60px; /* Add a top margin to avoid content overlay */
+	margin: 20px;
+	margin-top: 60px; /* Add a top margin to avoid content overlay */
 }
 
 .container {
@@ -1130,36 +1130,36 @@ body {
 
 /* Add a black background color to the top navigation */
 .topnav {
-    background-color: #333;
-    overflow: hidden;
-    position: fixed; /* Set the navbar to fixed position */
-    top: 0; /* Position the navbar at the top of the page */
-    width: 100%; /* Full width */
-    z-index:1;
+	background-color: #333;
+	overflow: hidden;
+	position: fixed; /* Set the navbar to fixed position */
+	top: 0; /* Position the navbar at the top of the page */
+	width: 100%; /* Full width */
+	z-index:1;
 }
 
 /* Style the links inside the navigation bar */
 .topnav a, input[type=button], input[type=submit], input[type=reset], button {
-    float: left;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-weight: 300;
-    font-size: 16px;
-    font-family: 'Open Sans', sans-serif;
+	float: left;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-weight: 300;
+	font-size: 16px;
+	font-family: 'Open Sans', sans-serif;
 }
 
 /* Change the color of links on hover */
 .topnav a:hover {
-    background-color: #ddd;
-    color: black;
+	background-color: #ddd;
+	color: black;
 }
 
 /* Add a color to the active/current link */
 .topnav a.active, input[type=button], input[type=submit], input[type=reset], button {
-    background-color: #4CAF50;
-    color: white;
+	background-color: #4CAF50;
+	color: white;
 }
 input[type=text], input[type=password], input[type=email] {
   width: 100%;
@@ -1187,7 +1187,7 @@ button {
 
 /* Add a hover effect for buttons */
 button:hover {
-    opacity: 0.8;
+	opacity: 0.8;
 }
 
 textarea {
@@ -1292,76 +1292,76 @@ textarea {
 	}
 
 #sidebar {
-    min-width: 80px;
-    max-width: 80px;
-    height: 100%;
-    background: #567;
-    color: #fff;
-    transition: all 0.3s;
-    position: fixed;
-    z-index: 1;
-    overflow: scroll;
+	min-width: 80px;
+	max-width: 80px;
+	height: 100%;
+	background: #567;
+	color: #fff;
+	transition: all 0.3s;
+	position: fixed;
+	z-index: 1;
+	overflow: scroll;
 }
 
 /* Shrinking the sidebar from 250px to 80px and center aligining its content*/
 #sidebar.active {
-    min-width: 250px;
-    max-width: 250px;
+	min-width: 250px;
+	max-width: 250px;
 }
 
 /* Toggling the sidebar header content, hide the big heading [h3] and showing the small heading [strong] and vice versa*/
 #sidebar .sidebar-header h6 {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-header strong {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-header h6 {
-    display: block;
+	display: block;
 }
 
 #sidebar .sidebar-option .big {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-option .small {
-    display: none;
+	display: none;
 }
 #sidebar.active .sidebar-option .big {
-    display: block;
+	display: block;
 }
 
 #sidebar ul li a {
-    text-align: left;
+	text-align: left;
 }
 
 #sidebar.active ul li a {
-    padding: 20px 10px;
-    text-align: center;
-    font-size: 0.85em;
+	padding: 20px 10px;
+	text-align: center;
+	font-size: 0.85em;
 }
 
 #sidebar.active ul li a i {
-    margin-right:  0;
-    display: block;
-    font-size: 1.8em;
-    margin-bottom: 5px;
+	margin-right:  0;
+	display: block;
+	font-size: 1.8em;
+	margin-bottom: 5px;
 }
 
 /* Same dropdown links padding*/
 #sidebar.active ul ul a {
-    padding: 10px !important;
+	padding: 10px !important;
 }
 
 /* Changing the arrow position to bottom center position, 
    translateX(50%) works with right: 50% 
    to accurately  center the arrow */
 #sidebar.active .dropdown-toggle::after {
-    top: auto;
-    bottom: 10px;
-    right: 50%;
-    -webkit-transform: translateX(50%);
-    -ms-transform: translateX(50%);
-    transform: translateX(50%);
+	top: auto;
+	bottom: 10px;
+	right: 50%;
+	-webkit-transform: translateX(50%);
+	-ms-transform: translateX(50%);
+	transform: translateX(50%);
 }
 </style>
 </head>
@@ -1418,18 +1418,18 @@ window.onclick = function(event) {
 <div class="main">
 
 	<!-- Sidebar  -->
-    <nav id="sidebar">
-        <div align="middle" class="sidebar-header">
-        	<div style="margin:5px;" id="sidebarCollapse">
-        		<h6><i  class="fas fa-align-left"></i>&nbsp;&nbsp;
-            	Table of Content</h6>
-	            <strong><i  class="fas fa-align-left"></i>
-            	Table</strong>
-	        </div>
-        </div>
+	<nav id="sidebar">
+		<div align="middle" class="sidebar-header">
+			<div style="margin:5px;" id="sidebarCollapse">
+				<h6><i  class="fas fa-align-left"></i>&nbsp;&nbsp;
+				Table of Content</h6>
+				<strong><i  class="fas fa-align-left"></i>
+				Table</strong>
+			</div>
+		</div>
 
-        <div align="left" class="sidebar-option">
-        	<form id="orderStyle"">
+		<div align="left" class="sidebar-option">
+			<form id="orderStyle"">
 			  <input type="radio" name="ordering" id="inorder" oninput="reorder();" checked> Sorted<br>
 			  <input type="radio" name="ordering" id="random" oninput="reorder();"> Random
 			</form>
@@ -1437,25 +1437,25 @@ window.onclick = function(event) {
 
 		<br>
 
-        <ul class="list-unstyled components">
-            <li class="active">
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    Verses
-                </a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-                """
-   	for ref in sort_verses(get_flashcards(username).keys()):
-   		html_str += """
-	                    <li>
-	                        <a href='#"""+ref+"""'>"""+ref+"""</a>
-	                    </li>
-                    """
+		<ul class="list-unstyled components">
+			<li class="active">
+				<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+					Verses
+				</a>
+				<ul class="collapse list-unstyled" id="homeSubmenu">
+				"""
+	for ref in sort_verses(get_flashcards(username).keys()):
+		html_str += """
+						<li>
+							<a href='#"""+ref+"""'>"""+ref+"""</a>
+						</li>
+					"""
 	html_str += """
-                </ul>
-            </li>
-        </ul>
+				</ul>
+			</li>
+		</ul>
 
-    </nav>
+	</nav>
 <div class="container">
 				"""
 	counter = 0
@@ -1463,20 +1463,20 @@ window.onclick = function(event) {
 		counter += 1
 		html_str += """
 	<div id='"""+reference+"""'>
-	    <p style="width:500px;">"""+reference+"""</p>
-	    <textarea cols="60" rows="5" onkeyup="setHeight('ans"""+str(counter)+"""');" id='ans"""+str(counter)+"""' type="text" oninput="checkAns('"""+str(counter)+"""')"></textarea>
-    	<p>
-    		<label id='mark"""+str(counter)+"""'>&#9997</label>
-    		&nbsp;&nbsp;
-    		<input id='case"""+str(counter)+"""' type="checkbox" checked oninput="checkAns('"""+str(counter)+"""')"> Case Sensitive
-    		&nbsp;&nbsp;&nbsp;
-    		<input id='punc"""+str(counter)+"""' type="checkbox" checked oninput="checkAns('"""+str(counter)+"""')"> Punctuation Sensitive 
-    	</p>
-	    <input id='showAns"""+str(counter)+"""' type="button" onclick="showAns('"""+str(counter)+"""')" value='Show Answer'>
-	    <p style="width:500px; visibility:hidden" id='key"""+str(counter)+"""'>"""+quiz_info[reference]+"""</p>
-	    <hr>
-    </div>
-    				"""
+		<p style="width:500px;">"""+reference+"""</p>
+		<textarea cols="60" rows="5" onkeyup="setHeight('ans"""+str(counter)+"""');" id='ans"""+str(counter)+"""' type="text" oninput="checkAns('"""+str(counter)+"""')"></textarea>
+		<p>
+			<label id='mark"""+str(counter)+"""'>&#9997</label>
+			&nbsp;&nbsp;
+			<input id='case"""+str(counter)+"""' type="checkbox" checked oninput="checkAns('"""+str(counter)+"""')"> Case Sensitive
+			&nbsp;&nbsp;&nbsp;
+			<input id='punc"""+str(counter)+"""' type="checkbox" checked oninput="checkAns('"""+str(counter)+"""')"> Punctuation Sensitive 
+		</p>
+		<input id='showAns"""+str(counter)+"""' type="button" onclick="showAns('"""+str(counter)+"""')" value='Show Answer'>
+		<p style="width:500px; visibility:hidden" id='key"""+str(counter)+"""'>"""+quiz_info[reference]+"""</p>
+		<hr>
+	</div>
+					"""
 	html_str += """
 
 </div>
@@ -1484,37 +1484,37 @@ window.onclick = function(event) {
 </div>
 <script>
 function checkAns(index) {
-    var key = document.getElementById('key'+index).innerHTML;
-    var ans = document.getElementById('ans'+index).value;
-    var puncS = document.getElementById('punc'+index).checked;
-    var caseS = document.getElementById('case'+index).checked;
-    key = key.trim().replace(/\s+/g, " ");
-    ans = ans.trim().replace(/\s+/g, " ");
-    if (!puncS) {
-    	key = key.replace(/[^\w\s]|_/g, "");
-        ans = ans.replace(/[^\w\s]|_/g, "");
-    }
-    if (!caseS) {
-    	key = key.toLowerCase();
-    	ans = ans.toLowerCase();
-    }
-    if (ans != key.substring(0, ans.length)) {
-        document.getElementById('mark'+index).innerHTML = '&#10008';
-    } else if (ans.length == key.length) {
-        document.getElementById('mark'+index).innerHTML = '&#10004';
-    } else {
-        document.getElementById('mark'+index).innerHTML = '&#9997';
-    }
+	var key = document.getElementById('key'+index).innerHTML;
+	var ans = document.getElementById('ans'+index).value;
+	var puncS = document.getElementById('punc'+index).checked;
+	var caseS = document.getElementById('case'+index).checked;
+	key = key.trim().replace(/\s+/g, " ");
+	ans = ans.trim().replace(/\s+/g, " ");
+	if (!puncS) {
+		key = key.replace(/[^\w\s]|_/g, "");
+		ans = ans.replace(/[^\w\s]|_/g, "");
+	}
+	if (!caseS) {
+		key = key.toLowerCase();
+		ans = ans.toLowerCase();
+	}
+	if (ans != key.substring(0, ans.length)) {
+		document.getElementById('mark'+index).innerHTML = '&#10008';
+	} else if (ans.length == key.length) {
+		document.getElementById('mark'+index).innerHTML = '&#10004';
+	} else {
+		document.getElementById('mark'+index).innerHTML = '&#9997';
+	}
 }
 
 function showAns(index) {
-    if (document.getElementById('showAns'+index).value == 'Show Answer') {
-        document.getElementById('showAns'+index).value = 'Hide Answer';
-        document.getElementById('key'+index).style = "width:500px; visibility:visible";
-    } else {
-        document.getElementById('showAns'+index).value = 'Show Answer';
-        document.getElementById('key'+index).style = "width:500px; visibility:hidden";
-    }
+	if (document.getElementById('showAns'+index).value == 'Show Answer') {
+		document.getElementById('showAns'+index).value = 'Hide Answer';
+		document.getElementById('key'+index).style = "width:500px; visibility:visible";
+	} else {
+		document.getElementById('showAns'+index).value = 'Show Answer';
+		document.getElementById('key'+index).style = "width:500px; visibility:hidden";
+	}
 }
 
 function setHeight(field){
