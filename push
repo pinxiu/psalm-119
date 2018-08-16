@@ -1,11 +1,11 @@
 #!/bin/bash
 content=$(wget https://psalm-119.herokuapp.com/files -q -O -)
 dt=$(date '+%d_%m_%Y_%H_%M_%S')
-echo $content >> "backup/json/backup_$dt.json"
-python3 parse_backup.py backup_$dt
-[ -e current ] && rm -r current
-mkdir current
-cp -R backup/backup_$dt/* current/
+echo $content >> "resources/web/backup/json/backup_$dt.json"
+python3 resources/dev/python/parse_backup.py backup_$dt
+[ -e resources/web/current ] && rm -r resources/web/current
+mkdir resources/web/current
+cp -R resources/web/backup/backup_$dt/* resources/web/current/
 if [ "$1" != "publish" ]; then
 	dst="staging"
 else
