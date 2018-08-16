@@ -11,5 +11,6 @@ if [ "$1" != "publish" ]; then
 else
 	dst="publish"
 fi
-git commit -a -m "backup"
+git add -A .
+git commit -m "backup"
 git push $dst
