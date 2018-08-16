@@ -9,10 +9,10 @@ if not os.path.exists(prefix):
 
 for file_name in sys.argv[1:]:
 
-	file_name = prefix + '/' + file_name
-
-	with open(file_name + '.json') as f:
+	with open(prefix + '/json/' + file_name + '.json') as f:
 		data = json.load(f)
+
+	file_name = prefix + '/' + file_name
 
 	if not os.path.exists(file_name):
 		os.makedirs(file_name)

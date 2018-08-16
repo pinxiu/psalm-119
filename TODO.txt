@@ -18,6 +18,11 @@
 34.quiz: feature to generate quiz via search bar w/o flashcards
 35.regroup files
 36."both to Greek " not shown as error (should be "Greeks")
+37.fix style bugs due to css (close icon)
+38.upon collapse/expand table of content, selection of sort/random should remains the same
+39.fix quiz: press link, div is half hidden by topnav
+40.fix expanded table style
+41.make answers to quiz scrollable (when verse is long, hard to copy the answers)
 
 New Features:
 1. fix notes

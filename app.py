@@ -33,6 +33,7 @@ with open('short_hand.json') as f4:
 def upload(file_name, content=dict()):
 	# if content == dict():
 	# 	content['.ignore'] = 'ignore'
+	file_name = "current/" + file_name
 	with open(file_name, 'w') as f:
 		f.write(json.dumps(content))
 		# cl_upload(file_name, resource_type="raw", public_id=file_name)
@@ -40,6 +41,7 @@ def upload(file_name, content=dict()):
 def download(file_name, fallback=dict()):
 	try:
 		# urllib.request.urlretrieve(prefix + file_name, file_name)
+		file_name = "current/" + file_name
 		with open(file_name) as f:
 			result = json.load(f)
 		return result
@@ -214,7 +216,6 @@ def display_flashcards(username):
 
 	/* Main content */
 	.main {
-		margin: 20px;
 		margin-top: 60px; /* Add a top margin to avoid content overlay */
 	}
 
@@ -288,6 +289,7 @@ def display_flashcards(username):
 
 	.container {
 		margin: auto;
+		margin-left: 60px;
 		margin-bottom: 30px;
 	}
 
@@ -438,28 +440,41 @@ def display_flashcards(username):
 	}
 
 #sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    background: #7386D5;
+    min-width: 100px;
+    max-width: 100px;
+    height: 100%;
+    background: #121212;
     color: #fff;
     transition: all 0.3s;
+    position: fixed;
+    z-index: 1;
+    overflow: scroll;
 }
 
 /* Shrinking the sidebar from 250px to 80px and center aligining its content*/
 #sidebar.active {
-    min-width: 80px;
-    max-width: 80px;
-    text-align: center;
+    min-width: 250px;
+    max-width: 250px;
 }
 
 /* Toggling the sidebar header content, hide the big heading [h3] and showing the small heading [strong] and vice versa*/
-#sidebar .sidebar-header strong {
-    display: none;
-}
-#sidebar.active .sidebar-header h3 {
+#sidebar .sidebar-header h6 {
     display: none;
 }
 #sidebar.active .sidebar-header strong {
+    display: none;
+}
+#sidebar.active .sidebar-header h6 {
+    display: block;
+}
+
+#sidebar .sidebar-option .big {
+    display: none;
+}
+#sidebar.active .sidebar-option .small {
+    display: none;
+}
+#sidebar.active .sidebar-option .big {
     display: block;
 }
 
@@ -476,7 +491,7 @@ def display_flashcards(username):
 #sidebar.active ul li a i {
     margin-right:  0;
     display: block;
-    font-size: 1.8em;
+    font-size: 0.85em;
     margin-bottom: 5px;
 }
 
@@ -555,52 +570,61 @@ window.onclick = function(event) {
 
     <!-- Sidebar  -->
     <nav id="sidebar">
-        <div class="sidebar-header">
-        	<button type="button" id="sidebarCollapse" class="btn btn-info">
-                <i class="fas fa-align-left"></i>
-                <span>Toggle Sidebar</span>
-            </button>
-            <h3>Bootstrap Sidebar</h3>
-            <strong>BS</strong>
+        <div align="middle" class="sidebar-header">
+        	<div style="margin:5px;" id="sidebarCollapse">
+        		<h6><i  class="fas fa-align-left"></i>&nbsp;&nbsp;
+            	Table of Content</h6>
+	            <strong><i  class="fas fa-align-left"></i>
+            	Table</strong>
+	        </div>
         </div>
 
-        <ul class="list-unstyled components">
+        <div class="sidebar-option" style="font-size:14px;margin-left:5px;">
+        	<form id="orderStyle"">
+			  <input type="radio" name="ordering" id="inorder" oninput="reorder();" checked> Sorted &nbsp &nbsp
+			  <input type="radio" name="ordering" id="random" oninput="reorder();"> Random
+			</form>
+		</div>
+
+        <ul class="list-unstyled components" style="font-size:14px;margin-left:5px;">
             <li class="active">
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <i class="fas fa-home"></i>
-                    Home
-                </a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-                    <li>
-                        <a href="#">Home 1</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 2</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 3</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fas fa-briefcase"></i>
-                    About
-                </a>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <i class="fas fa-copy"></i>
-                    Pages
-                </a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                    <li>
-                        <a href="#">Page 1</a>
-                    </li>
-                    <li>
-                        <a href="#">Page 2</a>
-                    </li>
-                    <li>
-                        <a href="#">Page 3</a>
-                    </li>
+                <ul class="list-unstyled" id="allLinks">
+                """
+	inventory = book_sort(flashcards)
+	for book in sorted(inventory, lambda x: order[x]):
+		html_str += """
+	                    <li>
+	                    	<a style="color:white;" href='#"""+book+"""' data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+			                    """+book+"""
+			                </a>
+			                <ul class="collapse list-unstyled" id='"""+book+"""'>
+			    	"""
+		for chapter in sorted(inventory[book]):
+			html_str += """
+								<li>
+									<a style="color:white;margin-left:10px;" href='#"""+book + str(chapter)+"""' data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+					                    ch. """+str(chapter)+"""
+					                </a>
+					                <ul class="collapse list-unstyled" id='"""+book + str(chapter)+"""'>
+					    """
+			for verse in sorted(inventory[book][chapter]):
+				reference = inventory[book][chapter][verse]
+				html_str += """
+										<li>
+											<a style="color:white;margin-left:20px;" href='#"""+reference+"""'>
+							                    """+re.subn(book + ' ', '', reference)[0]+"""
+							                </a>
+							            </li>
+						    """
+			html_str += """
+									</ul>
+								</li>
+						"""
+		html_str += """
+			                </ul>
+	                    </li>
+                    """
+	html_str += """
                 </ul>
             </li>
         </ul>
@@ -609,11 +633,18 @@ window.onclick = function(event) {
 
 	<div id="content">
     	<div class="container">
-
+    			<div id="ordered_cards">
 				"""
 				
-	html_str += show_flashcards(flashcards)
+	html_str += show_flashcards(flashcards, "ordered")
 	html_str += """
+				</div>
+				<div id="random_cards">
+				"""
+				
+	html_str += show_flashcards(flashcards, "random")
+	html_str += """
+				</div>
 		</div>
 	</div>
 </div>
@@ -632,6 +663,13 @@ window.onclick = function(event) {
 	  $(this).toggleClass("flipme");
 	});
 
+function reorder() {
+	if (document.getElementById('inorder').checked) {
+		document.getElementById('ordered_cards').style = "display:block;";
+		document.getElementById('random_cards').style = "display:none;";
+	}
+}
+
 $(document).ready(function () {
 
     $('#sidebarCollapse').on('click', function () {
@@ -645,16 +683,35 @@ $(document).ready(function () {
 				"""
 	return html_str
 
-def show_flashcards(flashcards):
-	html_str = ""
+import random
+
+def book_sort(flashcards):
+	inventory = dict()
 	for reference in flashcards:
+		book, chapter, verse, _1, _2, _3 = parse(reference)
+		chapter = int(chapter)
+		verse = int(verse)
+		if book not in inventory:
+			inventory[book] = dict()
+		if chapter not in inventory[book]:
+			inventory[book][chapter] = dict()
+		inventory[book][chapter][verse] = reference
+	return inventory
+
+def show_flashcards(flashcards, ordering):
+	html_str = ""
+	if ordering == "ordered":
+		sorted_verses = sort_verses(flashcards.keys())
+	else:
+		sorted_verses = random.sample(flashcards.keys(), len(flashcards))
+	for reference in sorted_verses:
 		if reference[0] == '.':
 			continue
 		passage = find_passage(reference)[1]
 		_, reviewed, score, times = flashcards[reference]
 		html_str += """
 	<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-	  <div class="flippable appcon ac">
+	  <div class="flippable appcon ac" id='"""+reference+"""'>
 		<div class="front"><div class="center_p">"""+reference+"""</div></div>
 		<div class="back">"""+passage+"""</div>
 	  </div>
@@ -1233,6 +1290,79 @@ textarea {
 	.form button:hover,.form button:active,.form button:focus {
 	  background: #43A047;
 	}
+
+#sidebar {
+    min-width: 80px;
+    max-width: 80px;
+    height: 100%;
+    background: #567;
+    color: #fff;
+    transition: all 0.3s;
+    position: fixed;
+    z-index: 1;
+    overflow: scroll;
+}
+
+/* Shrinking the sidebar from 250px to 80px and center aligining its content*/
+#sidebar.active {
+    min-width: 250px;
+    max-width: 250px;
+}
+
+/* Toggling the sidebar header content, hide the big heading [h3] and showing the small heading [strong] and vice versa*/
+#sidebar .sidebar-header h6 {
+    display: none;
+}
+#sidebar.active .sidebar-header strong {
+    display: none;
+}
+#sidebar.active .sidebar-header h6 {
+    display: block;
+}
+
+#sidebar .sidebar-option .big {
+    display: none;
+}
+#sidebar.active .sidebar-option .small {
+    display: none;
+}
+#sidebar.active .sidebar-option .big {
+    display: block;
+}
+
+#sidebar ul li a {
+    text-align: left;
+}
+
+#sidebar.active ul li a {
+    padding: 20px 10px;
+    text-align: center;
+    font-size: 0.85em;
+}
+
+#sidebar.active ul li a i {
+    margin-right:  0;
+    display: block;
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+/* Same dropdown links padding*/
+#sidebar.active ul ul a {
+    padding: 10px !important;
+}
+
+/* Changing the arrow position to bottom center position, 
+   translateX(50%) works with right: 50% 
+   to accurately  center the arrow */
+#sidebar.active .dropdown-toggle::after {
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+}
 </style>
 </head>
 <body>
@@ -1287,13 +1417,52 @@ window.onclick = function(event) {
 
 <div class="main">
 
+	<!-- Sidebar  -->
+    <nav id="sidebar">
+        <div align="middle" class="sidebar-header">
+        	<div style="margin:5px;" id="sidebarCollapse">
+        		<h6><i  class="fas fa-align-left"></i>&nbsp;&nbsp;
+            	Table of Content</h6>
+	            <strong><i  class="fas fa-align-left"></i>
+            	Table</strong>
+	        </div>
+        </div>
+
+        <div align="left" class="sidebar-option">
+        	<form id="orderStyle"">
+			  <input type="radio" name="ordering" id="inorder" oninput="reorder();" checked> Sorted<br>
+			  <input type="radio" name="ordering" id="random" oninput="reorder();"> Random
+			</form>
+		</div>
+
+		<br>
+
+        <ul class="list-unstyled components">
+            <li class="active">
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    Verses
+                </a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                """
+   	for ref in sort_verses(get_flashcards(username).keys()):
+   		html_str += """
+	                    <li>
+	                        <a href='#"""+ref+"""'>"""+ref+"""</a>
+	                    </li>
+                    """
+	html_str += """
+                </ul>
+            </li>
+        </ul>
+
+    </nav>
 <div class="container">
 				"""
 	counter = 0
 	for reference in quiz_info:
 		counter += 1
 		html_str += """
-	<div>
+	<div id='"""+reference+"""'>
 	    <p style="width:500px;">"""+reference+"""</p>
 	    <textarea cols="60" rows="5" onkeyup="setHeight('ans"""+str(counter)+"""');" id='ans"""+str(counter)+"""' type="text" oninput="checkAns('"""+str(counter)+"""')"></textarea>
     	<p>
@@ -1517,6 +1686,13 @@ def find_passage(reference, flag=False):
 		return fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2), passage
 	except KeyError:
 		return None, None
+
+def get_weight(reference):
+	book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)
+	return (int(order[book1]) * 1000 + int(chapter1)) * 1000 + int(verse1)
+
+def sort_verses(verses):
+	return sorted(verses, key=lambda v: get_weight(v))
 
 def fixed_reference(book1, chapter1, verse1, book2, chapter2, verse2):
 	if book1 == book2:
