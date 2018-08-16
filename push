@@ -1,23 +1,23 @@
 #!/bin/bash
-echo -n "reading data from website..."
+echo -n "reading data from website... "
 content=$(wget https://psalm-119.herokuapp.com/files -q -O -)
 dt=$(date '+%d_%m_%Y_%H_%M_%S')
 echo $content >> "resources/web/backup/json/backup_$dt.json"
 echo "done."
 
-echo -n "updating local user resources..."
+echo -n "updating local user resources... "
 python3 resources/dev/python/parse_backup.py backup_$dt
 [ -e resources/web/current ] && rm -r resources/web/current
 mkdir resources/web/current
 cp -R resources/web/backup/backup_$dt/* resources/web/current/
 echo "done."
 
-echo -n "committing changes..."
+echo -n "committing changes... "
 git add -A .
 git commit -q -m "backup"
 echo "done."
 
-echo "pushing to Github..."
+echo "pushing to Github... "
 if [ "$1" != "publish" ]; then
 	dst="staging"
 else
