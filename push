@@ -1,0 +1,15 @@
+#!/bin/bash
+content=$(wget https://psalm-119.herokuapp.com/files -q -O -)
+dt=$(date '+%d_%m_%Y_%H_%M_%S')
+echo $content >> "backup/json/backup_$dt.json"
+python3 parse_backup.py backup_$dt
+[ -e current ] && rm -r current
+mkdir current
+cp -R backup/backup_$dt/* current/
+if [ "$1" != "publish" ]; then
+	dst="staging"
+else
+	dst="publish"
+fi
+git commit -a -m "backup"
+git push $dst
