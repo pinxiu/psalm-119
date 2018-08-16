@@ -33,16 +33,14 @@ with open('short_hand.json') as f4:
 def upload(file_name, content=dict()):
 	# if content == dict():
 	# 	content['.ignore'] = 'ignore'
-	file_name = "current/" + file_name
-	with open(file_name, 'w') as f:
+	with open("current/" + file_name, 'w') as f:
 		f.write(json.dumps(content))
 		# cl_upload(file_name, resource_type="raw", public_id=file_name)
 
 def download(file_name, fallback=dict()):
 	try:
 		# urllib.request.urlretrieve(prefix + file_name, file_name)
-		file_name = "current/" + file_name
-		with open(file_name) as f:
+		with open("current/" + file_name) as f:
 			result = json.load(f)
 		return result
 	except Exception:
