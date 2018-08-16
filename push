@@ -1,11 +1,14 @@
 #!/bin/bash
+echo "reading data from website ..."
 content=$(wget https://psalm-119.herokuapp.com/files -q -O -)
 dt=$(date '+%d_%m_%Y_%H_%M_%S')
 echo $content >> "resources/web/backup/json/backup_$dt.json"
+echo "updating local user resources ..."
 python3 resources/dev/python/parse_backup.py backup_$dt
 [ -e resources/web/current ] && rm -r resources/web/current
 mkdir resources/web/current
 cp -R resources/web/backup/backup_$dt/* resources/web/current/
+echo "pushing to Github ..."
 if [ "$1" != "publish" ]; then
 	dst="staging"
 else
