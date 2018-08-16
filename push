@@ -12,7 +12,7 @@ cp -R resources/web/backup/backup_$dt/* resources/web/current/
 
 echo "committing changes..."
 git add -A .
-git commit -m "backup"
+git commit -q -m "backup"
 
 echo "pushing to Github..."
 if [ "$1" != "publish" ]; then
@@ -20,4 +20,4 @@ if [ "$1" != "publish" ]; then
 else
 	dst="publish"
 fi
-git push $dst
+git push -q $dst
