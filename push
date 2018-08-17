@@ -6,7 +6,9 @@ echo $content >> "resources/web/backup/json/backup_$dt.json"
 echo "done."
 
 echo -n "updating local user resources... "
-python3 resources/dev/python/parse_backup.py backup_$dt
+cd resources/dev/python
+python3 parse_backup.py backup_$dt
+cd ../../..
 [ -e resources/web/current ] && rm -r resources/web/current
 mkdir resources/web/current
 cp -R resources/web/backup/backup_$dt/* resources/web/current/
