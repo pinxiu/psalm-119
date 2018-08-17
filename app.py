@@ -1,18 +1,7 @@
+from app_tools.general.user_utils import app_get_all_info
 from flask import Flask, request, render_template, redirect
+
 app = Flask(__name__)
-
-import json
-import re
-import hashlib
-import urllib
-
-
-from os import listdir
-import random
-import datetime
-
-from load_source import *
-from user_utils import app_get_all_info
 
 @app.route('/files')
 def files():

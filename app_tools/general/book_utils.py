@@ -19,6 +19,8 @@ def app_sort_references(references, flatten=True):
 
 from app_tools.static.resources import *
 
+import re
+
 # checking passage
 
 def check_verse(status, book, chapter, verse):

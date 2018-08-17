@@ -2,10 +2,12 @@
 # internal helper functions #
 #############################
 
+from app_tools.general.book_utils import app_find_passage, app_sort_references
 from app_tools.general.io_utils import app_upload, app_download
+from app_tools.static.constants import flashcards_file
 
 def get_flashcards(username):
-	flash_dir = username + '/flash.json'
+	flash_dir = username + '/' + flashcards_file
 	flashcards = download(flash_dir)
 	return flashcards
 
