@@ -1,8 +1,8 @@
 import json
 
-f = open('order.txt', 'r')
-o = open('order.json', 'w')
-o2 = open('index.json', 'w')
+f = open('../txt/order.txt', 'r')
+o = open('../json/order.json', 'w')
+o2 = open('../json/index.json', 'w')
 content = dict()
 inventory = dict()
 counter = 1

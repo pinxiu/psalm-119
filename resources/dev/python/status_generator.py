@@ -1,6 +1,6 @@
 import json
 
-with open('ESV.json') as f1:
+with open('../json/ESV.json') as f1:
 	data = json.load(f1)
 
 inventory = dict()
@@ -12,7 +12,7 @@ for book in data:
 		for verse in data[book][chapter]:
 			inventory[book][chapter][verse] = 'false'
 
-with open('status.json', 'w') as f2:
+with open('../json/status.json', 'w') as f2:
 	f2.write(json.dumps(inventory))
 
 

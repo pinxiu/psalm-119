@@ -2,7 +2,7 @@ import json
 import sys
 import os
 
-prefix = "resources/web/backup"
+prefix = "../../web/backup"
 
 if not os.path.exists(prefix):
 	os.makedirs(prefix)
