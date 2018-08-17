@@ -1,3 +1,14 @@
+#############################
+# internal helper functions #
+#############################
+
+from app_tools.general.io_utils import app_upload, app_download
+
+def get_flashcards(username):
+	flash_dir = username + '/flash.json'
+	flashcards = download(flash_dir)
+	return flashcards
+
 def show_flashcards(flashcards, ordering):
 	html_str = ""
 	if ordering == "ordered":

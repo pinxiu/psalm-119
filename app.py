@@ -6,24 +6,17 @@ import re
 import hashlib
 import urllib
 
-import os
+
 from os import listdir
 import random
 import datetime
 
-from io_utils import *
 from load_source import *
+from user_utils import app_get_all_info
 
 @app.route('/files')
 def files():
-	result = get_users()
-	for user in result:
-		if user[0] == '.':
-			continue
-		result[user]['status.json'] = get_progress(user)
-		result[user]['notes.json'] = get_notes(user)
-		result[user]['flash.json'] = get_flashcards(user)
-	return json.dumps(result)
+	return app_get_all_info()
 
 @app.route('/')
 @app.route('/<username>')
@@ -40,7 +33,7 @@ def search(reference='', flag='false', username=''):
 	else:
 		flag = False
 	if reference:
-		reference, passage = find_passage(reference, flag)
+		reference, passage = app_find_passage(reference, flag)
 	else:
 		return render_template('index.html', user=username, email=get_email(username))
 	if passage:
@@ -138,17 +131,7 @@ def check(reference='', username=''):
 		return render_template('index.html', error='Please log in.')
 	status = get_progress(username)
 	if reference:
-		book1, chapter1, verse1, book2, chapter2, verse2 = parse(reference)
-		if book2:
-			if book1 == book2:
-				check_book(status, book1, chapter1, verse1, chapter2, verse2)
-			else:
-				check_book(status, book1, chapter1=chapter1, verse1=verse1)
-				for i in range(int(order[book1]) + 1, int(order[book2])):
-					check_book(status, book_index[str(i)])
-				check_book(status, book2, chapter2=chapter2, verse2=verse2)
-		else:
-			check_book(status, book1, chapter1, verse1, chapter1, verse1)
+		app_check_passage(reference)
 	upload(username + '/status.json', status)
 	return redirect('/' + username)
 
@@ -157,8 +140,7 @@ def check(reference='', username=''):
 @app.route('/submit/<reference>/<note>/<flag>/')
 @app.route('/submit/<reference>/<note>/<flag>/<username>')
 def submit(reference='', note='', flag=False, username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
+	app_auth_user(username)
 	if reference and note:
 		note_dir = username + '/notes.json'
 		notes = download(note_dir)
@@ -173,14 +155,7 @@ def submit(reference='', note='', flag=False, username=''):
 @app.route('/feed/<note>/')
 @app.route('/feed/<note>/<username>')
 def feed(note='', username=''):
-	if note:
-		feed_dir = 'feedback.json'
-		feed = download(feed_dir)
-		result = dict()
-		result['username'] = username
-		result['content'] = note
-		feed[str(datetime.datetime.now())] = result
-		upload(feed_dir, feed)
+	app_submit_feedback(note, username)
 	return redirect('/feedback/' + username)
 
 @app.route('/feedback/')

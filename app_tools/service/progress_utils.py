@@ -1,3 +1,27 @@
+def app_initialize_progress():
+	return make_status
+
+#############################
+# internal helper functions #
+#############################
+
+from app_tools.general.io_utils import app_upload, app_download
+
+def get_progress(username):
+	status_dir = username + '/status.json'
+	status = download(status_dir, fallback="progress")
+	return status
+
+def make_status():
+	inventory = dict()
+	for book in data:
+		inventory[book] = dict()
+		for chapter in data[book]:
+			inventory[book][chapter] = dict()
+			for verse in data[book][chapter]:
+				inventory[book][chapter][verse] = 'false'
+	return inventory
+
 def display_progress(username):
 	status = get_progress(username)
 	html_str = """
