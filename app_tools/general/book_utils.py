@@ -17,6 +17,7 @@ def app_sort_references(references, flatten=True):
 # internal helper functions #
 #############################
 
+from app_tools.service.progress_utils import app_get_progress, app_update_progress
 from app_tools.static.resources import *
 
 import re
@@ -53,6 +54,7 @@ def check_book(status, book, chapter1=None, verse1=None, chapter2=None, verse2=N
 	return status
 
 def check_passage(reference):
+	status = app_get_progress(username)
 	book1, chapter1, verse1, book2, chapter2, verse2 = parse_reference(reference)
 	if book2:
 		if book1 == book2:
@@ -64,6 +66,7 @@ def check_passage(reference):
 			check_book(status, book2, chapter2=chapter2, verse2=verse2)
 	else:
 		check_book(status, book1, chapter1, verse1, chapter1, verse1)
+	app_update_progress(username , status)
 
 # finding passage
 

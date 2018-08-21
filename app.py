@@ -2,7 +2,9 @@ from app_tools.general.book_utils import app_find_passage, app_display_reference
 from app_tools.general.display_utils import *
 from app_tools.general.user_utils import app_get_all_info, app_auth_user, \
 app_login_user, app_register_user, app_reset_user
+from app_tools.service.feedback_utils import app_display_feedback
 from app_tools.service.flashcard_utils import app_store_flashcard
+from app_tools.service.note_utils import app_submit_note
 from flask import Flask, request, redirect
 from werkzeug.exceptions import HTTPException
 
@@ -109,10 +111,8 @@ def store(reference='', flag=False, username=''):
 @app.route('/check/<reference>/<username>')
 def check(reference='', username=''):
 	app_auth_user(username)
-	status = get_progress(username)
 	if reference:
 		app_check_passage(reference)
-	app_upload(username + '/status.json', status)
 	return redirect('/' + username)
 
 @app.route('/submit/')
@@ -121,14 +121,7 @@ def check(reference='', username=''):
 @app.route('/submit/<reference>/<note>/<flag>/<username>')
 def submit(reference='', note='', flag=False, username=''):
 	app_auth_user(username)
-	if reference and note:
-		note_dir = username + '/notes.json'
-		notes = download(note_dir)
-		result = dict()
-		result['reference'] = reference
-		result['content'] = note
-		notes[str(datetime.datetime.now())] = result
-		app_upload(note_dir, notes)
+	app_submit_note(reference, note)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 @app.route('/feed/')
@@ -141,12 +134,11 @@ def feed(note='', username=''):
 @app.route('/feedback/')
 @app.route('/feedback/<username>')
 def feedback(username=''):
-	return render_template('feedback.html', user=username, email=get_email(username))
+	return show_feedback_page(username)
 
 @app.route('/view')
 def view():
-	result = get_feedback()
-	return json.dumps(result)
+	return app_display_feedback()
 
 @app.errorhandler(HTTPException)
 def handle_error(e):

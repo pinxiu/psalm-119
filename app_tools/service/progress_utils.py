@@ -1,5 +1,9 @@
 def app_initialize_progress():
 	return make_status()
+def app_get_progress(username):
+	return get_progress(username)
+def app_update_progress(username, status):
+	return update_progress(username, status)
 
 #############################
 # internal helper functions #
@@ -13,6 +17,10 @@ def get_progress(username):
 	status_dir = username + '/' + status_file
 	status = app_download(status_dir, make_status())
 	return status
+
+def update_progress(username, status):
+	status_dir = username + '/' + status_file
+	status = app_upload(status_dir, status)
 
 def make_status():
 	inventory = dict()

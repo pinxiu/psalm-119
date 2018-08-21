@@ -1,3 +1,6 @@
+def app_display_feedback():
+	return display_feedback()
+
 def app_submit_feedback(note, username):
 	return submit_feedback(note, username)
 
@@ -24,3 +27,6 @@ def submit_feedback(note, username):
 		feed[str(datetime.datetime.now())] = result
 		app_upload(feed_dir, feed)
 		
+def display_feedback():
+	result = get_feedback()
+	return json.dumps(result)

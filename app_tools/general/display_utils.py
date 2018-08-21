@@ -8,9 +8,6 @@ def show_passage(reference, passage, flag=False, username=''):
 		number = 'Show Verse Number'
 	return render_template('index.html', reference=reference, passage=passage, number=number, user=username, email=app_get_email(username))
 
-def show_user_not_login():
-	return render_template('index.html', error='Please log in.')
-
 def show_index_page(username):
 	return render_template('index.html', user=username, email=app_get_email(username))
 
@@ -22,3 +19,6 @@ def show_help_page(username):
 
 def show_note_page(username):
 	return render_template('notes.html', notes=display_notes(username), user=username, email=app_get_email(username))
+
+def show_feedback_page(username):
+	return render_template('feedback.html', user=username, email=app_get_email(username))
