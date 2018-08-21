@@ -23,6 +23,11 @@
 39.fix quiz: press link, div is half hidden by topnav
 40.fix expanded table style
 41.make answers to quiz scrollable (when verse is long, hard to copy the answers)
+42.fix ! "Fo (no space in between Rom11:33-36)
+43.fix Romans 12:15-18 Never be conceited->Never be wise in your own sight.
+44.fix Ro5:6-8 "-- " space
+45.fix Romans 6:11-12 bodies->body, their->its
+46.fix bug "Genesis:1"
 
 New Features:
 1. fix notes

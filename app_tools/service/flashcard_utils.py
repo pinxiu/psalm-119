@@ -1,3 +1,6 @@
+def app_store_flashcard(reference, username):
+	return store_flashcard(reference, username)
+
 #############################
 # internal helper functions #
 #############################
@@ -8,8 +11,14 @@ from app_tools.static.constants import flashcards_file
 
 def get_flashcards(username):
 	flash_dir = username + '/' + flashcards_file
-	flashcards = download(flash_dir)
+	flashcards = app_download(flash_dir)
 	return flashcards
+
+def store_flashcard(reference, username):
+	flashcards = get_flashcards(username)
+	if reference and reference not in flashcards:
+		flashcards[reference] = create_flashcard(reference)
+		app_upload(username + '/' + flashcards_file, flashcards)
 
 def show_flashcards(flashcards, ordering):
 	html_str = ""

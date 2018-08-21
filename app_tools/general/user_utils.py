@@ -23,7 +23,8 @@ def app_get_all_info():
 
 from app_tools.general.io_utils import app_upload, app_download, app_initialize_user, app_get_user_info
 from app_tools.static.constants import users_file
-
+from werkzeug.exceptions import BadRequest, Unauthorized
+import hashlib
 import json
 
 def get_users():
@@ -40,9 +41,9 @@ def get_secret(username, password):
 def reset_user(username, password, email):
 	users = get_users()
 	if username not in users:
-		return 'User does not exist.'
+		raise BadRequest('User does not exist.')
 	elif email != users[username]['email']:
-		return 'Email does not match.'
+		raise BadRequest('Email does not match.')
 	secret = get_secret(username, password)
 	users[username]['secret'] = secret
 	app_upload(users_file, users)
@@ -51,11 +52,11 @@ def reset_user(username, password, email):
 def register_user(username, password, email):
 	users = get_users()
 	if not username or not password or not email:
-		return 'Please fill in all the required fields.'
+		raise BadRequest('Please fill in all the required fields.')
 	elif email in [item['email'] for item in users.values()]:
-		return 'This email is already registered.'
+		raise BadRequest('This email is already registered.')
 	elif username in users:
-		return 'This username is already registered.'
+		raise BadRequest('This username is already registered.')
 	else:
 		secret = get_secret(username, password)
 		users[username] = {'secret':secret, 'email':email}
@@ -67,15 +68,13 @@ def login_user(username, password):
 	secret = get_secret(username, password)
 	users = get_users()
 	if username not in users:
-		return 'User not exists.'
+		raise Unauthorized('User not exists.')
 	elif secret != users[username]['secret']:
-		return 'Password does not match.'
-	else: 
-		return ''
+		raise Unauthorized('Password does not match.')
 
 def auth_user(username):
 	if not username:
-		return "Please log in."
+		raise Unauthorized("Please log in.")
 
 def get_email(username):
 	users = get_users()

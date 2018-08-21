@@ -1,5 +1,10 @@
-from app_tools.general.user_utils import app_get_all_info
-from flask import Flask, request, render_template, redirect
+from app_tools.general.book_utils import app_find_passage, app_display_reference
+from app_tools.general.display_utils import *
+from app_tools.general.user_utils import app_get_all_info, app_auth_user, \
+app_login_user, app_register_user, app_reset_user
+from app_tools.service.flashcard_utils import app_store_flashcard
+from flask import Flask, request, redirect
+from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 
@@ -10,34 +15,29 @@ def files():
 @app.route('/')
 @app.route('/<username>')
 def index(username=''):
-	return render_template('index.html', user=username, email=get_email(username))
+	return show_index_page(username)
 
 @app.route('/search/')
 @app.route('/search/<reference>/')
 @app.route('/search/<reference>/<flag>/')
 @app.route('/search/<reference>/<flag>/<username>')
 def search(reference='', flag='false', username=''):
-	if flag == 'true':
-		flag = True
-	else:
-		flag = False
-	if reference:
-		reference, passage = app_find_passage(reference, flag)
-	else:
-		return render_template('index.html', user=username, email=get_email(username))
+	if not reference:
+		return redirect('/' + username)
+	passage = app_find_passage(reference, flag == 'true')
 	if passage:
-		return show_passage(reference, passage, flag, username)
+		return show_passage(app_display_reference(reference), passage, flag == 'true', username)
 	else:
-		return render_template('index.html', error='Cannot find passage', user=username, email=get_email(username))
+		return show_index_error('Cannot find passage', username)
 
 @app.route('/register')
 def register():
 	username = request.args.get('reguname')
 	password = request.args.get('regpsw')
 	email = request.args.get('regemail')
-	error = register_user(username, password, email)
+	error = app_register_user(username, password, email)
 	if error:
-		return render_template('index.html', error=error)
+		return show_index_error(error)
 	else:
 		return redirect('/login?loguname=' + username + '&logpsw=' + password)
 
@@ -46,9 +46,9 @@ def reset():
 	username = request.args.get('resuname')
 	email = request.args.get('resemail')
 	password = request.args.get('respsw')
-	error = reset_user(username, password, email)
+	error = app_reset_user(username, password, email)
 	if error:
-		return render_template('index.html', error=error)
+		return show_index_error(error)
 	else:
 		return redirect('/login?loguname=' + username + '&logpsw=' + password)
 
@@ -60,43 +60,39 @@ def logout():
 def login(username='', password=''):
 	username = request.args.get('loguname')
 	password = request.args.get('logpsw')
-	error = auth(username, password)
+	error = app_login_user(username, password)
 	if error:
-		return render_template('index.html', error=error)
+		return show_index_error(error)
 	else:
-		return render_template('index.html', user=username, email=get_email(username))
+		return redirect('/' + username)
 
 @app.route('/flashcards/')
 @app.route('/flashcards/<username>')
 def flash(username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
+	app_auth_user(username)
 	return display_flashcards(username)
 
 @app.route('/help/')
 @app.route('/help/<username>')
 def help(username=''):
-	return render_template('help.html', user=username, email=get_email(username))
+	return show_help_page(username)
 
 @app.route('/progress/')
 @app.route('/progress/<username>')
 def progress(username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
+	app_auth_user(username)
 	return display_progress(username)
 
 @app.route('/notes/')
 @app.route('/notes/<username>')
 def notes(username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
-	return render_template('notes.html', notes=display_notes(username), user=username, email=get_email(username))
+	app_auth_user(username)
+	return show_note_page(username)
 
 @app.route('/quiz/')
 @app.route('/quiz/<username>')
 def quiz(username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
+	app_auth_user(username)
 	return display_quiz(username)
 	
 @app.route('/store/')
@@ -104,24 +100,19 @@ def quiz(username=''):
 @app.route('/store/<reference>/<flag>/')
 @app.route('/store/<reference>/<flag>/<username>')
 def store(reference='', flag=False, username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
-	flashcards = get_flashcards(username)
-	if reference and reference not in flashcards:
-		flashcards[reference] = create_flashcard(reference)
-		upload(username + '/flash.json', flashcards)
+	app_auth_user(username)
+	app_store_flashcard(reference, username)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 @app.route('/check/')
 @app.route('/check/<reference>/')
 @app.route('/check/<reference>/<username>')
 def check(reference='', username=''):
-	if not username:
-		return render_template('index.html', error='Please log in.')
+	app_auth_user(username)
 	status = get_progress(username)
 	if reference:
 		app_check_passage(reference)
-	upload(username + '/status.json', status)
+	app_upload(username + '/status.json', status)
 	return redirect('/' + username)
 
 @app.route('/submit/')
@@ -137,7 +128,7 @@ def submit(reference='', note='', flag=False, username=''):
 		result['reference'] = reference
 		result['content'] = note
 		notes[str(datetime.datetime.now())] = result
-		upload(note_dir, notes)
+		app_upload(note_dir, notes)
 	return redirect('/search/' + reference + '/' + flag + '/' + username)
 
 @app.route('/feed/')
@@ -156,4 +147,8 @@ def feedback(username=''):
 def view():
 	result = get_feedback()
 	return json.dumps(result)
+
+@app.errorhandler(HTTPException)
+def handle_error(e):
+    return show_index_error(e)
 

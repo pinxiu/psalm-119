@@ -14,12 +14,13 @@ def app_get_user_info(username):
 # internal helper functions #
 #############################
 
+import json
 import os
 
 from app_tools.static.constants import *
 from app_tools.service.progress_utils import app_initialize_progress
 
-prefix = '../resources/web/current/'
+prefix = 'resources/web/current/'
 
 def upload(file_name, content=dict()):
 	file_name = prefix + file_name

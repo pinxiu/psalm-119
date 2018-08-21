@@ -41,11 +41,11 @@ function store(reference, user) {
         location.href = window.location.origin + "/store/" + reference+ '/' + flag + '/' + user;
 }
 function change(reference, user) {
-	if (document.getElementById('number').value == 'Show Verse Number') {
-		document.getElementById('number').value = 'Hide Verse Number';
+	if (document.getElementById('number').innerHTML == 'Show Verse Number') {
+		document.getElementById('number').innerHTML = 'Hide Verse Number';
 		location.href = window.location.origin + "/search/" + reference + '/true/' + user;
 	} else {
-		document.getElementById('number').value = 'Show Verse Number';
+		document.getElementById('number').innerHTML = 'Show Verse Number';
 		location.href = window.location.origin + "/search/" + reference + '/false/' + user;
 	}
 }

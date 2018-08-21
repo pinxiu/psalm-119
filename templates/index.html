@@ -130,9 +130,7 @@ window.onclick = function(event) {
     });
   </script>
 
-</div>
 
-<div class='row'>
 
   {% if error %}
     <p>{{error}}</p>
@@ -140,15 +138,15 @@ window.onclick = function(event) {
 
   {% if reference %}
 
-  <div class='column-r'>
+  <!-- <div class='column-r'>
       <div><textarea id="note" cols="50" rows="5" onkeyup="setHeight('note');"></textarea></div>
       <div><input type="button" onclick="submit('{{reference}}', '{{user}}')" value="Submit"></div>
-  </div>
+  </div> -->
 
   <div class='column-l'>
 
     {% if reference %}
-      <p>{{reference}} <input id="number" type="button" onclick="change('{{reference}}', '{{user}}')" value='{{number}}'></p>
+      <p>{{reference}} <a href="#" id="number" onclick="change('{{reference}}', '{{user}}')">{{number}}</a></p>
     {% endif %}
   	{% if passage %}
   	  <p class='passage'>{{passage}}</p>

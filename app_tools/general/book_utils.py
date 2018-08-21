@@ -24,7 +24,7 @@ import re
 # checking passage
 
 def check_verse(status, book, chapter, verse):
-	status[book][chapter][verse] = 'true'
+	status[book][chapter][verse] = True
 	return status
 
 def check_chapter(status, book, chapter, start=None, end=None):
