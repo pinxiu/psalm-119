@@ -2,7 +2,7 @@ from app_tools.general.book_utils import app_find_passage, app_display_reference
 from app_tools.general.display_utils import *
 from app_tools.general.user_utils import app_get_all_info, app_auth_user, \
 app_login_user, app_register_user, app_reset_user
-from app_tools.service.feedback_utils import app_display_feedback
+from app_tools.service.feedback_utils import app_display_feedback, app_submit_feedback
 from app_tools.service.flashcard_utils import app_store_flashcard
 from app_tools.service.note_utils import app_submit_note
 from flask import Flask, request, redirect
