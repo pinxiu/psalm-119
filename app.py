@@ -5,6 +5,7 @@ app_login_user, app_register_user, app_reset_user
 from app_tools.service.feedback_utils import app_display_feedback, app_submit_feedback
 from app_tools.service.flashcard_utils import app_store_flashcard
 from app_tools.service.note_utils import app_submit_note
+from app_tools.service.progress_utils import app_display_progress, app_update_progress
 from flask import Flask, request, redirect
 from werkzeug.exceptions import HTTPException
 
@@ -83,7 +84,7 @@ def help(username=''):
 @app.route('/progress/<username>')
 def progress(username=''):
 	app_auth_user(username)
-	return display_progress(username)
+	return app_display_progress(username)
 
 @app.route('/notes/')
 @app.route('/notes/<username>')
@@ -112,7 +113,7 @@ def store(reference='', flag=False, username=''):
 def check(reference='', username=''):
 	app_auth_user(username)
 	if reference:
-		app_check_passage(reference)
+		app_update_progress(username, reference)
 	return redirect('/' + username)
 
 @app.route('/submit/')

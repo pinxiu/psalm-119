@@ -8,8 +8,9 @@ def app_submit_feedback(note, username):
 # internal helper functions #
 #############################
 
-from app_tools.general.io_utils import app_upload, app_download
-from app_tools.static.constants import feedback_file
+from app_tools.general.io_utils import app_upload, app_download, app_json_dump
+from app_tools.static.constants import app_feedback_file
+
 import datetime
 
 def get_feedback():
@@ -29,4 +30,4 @@ def submit_feedback(note, username):
 		
 def display_feedback():
 	result = get_feedback()
-	return json.dumps(result)
+	return app_json_dump(result)

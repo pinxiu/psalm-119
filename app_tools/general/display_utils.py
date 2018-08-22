@@ -18,7 +18,7 @@ def show_help_page(username):
 	return render_template('help.html', user=username, email=app_get_email(username))
 
 def show_note_page(username):
-	return render_template('notes.html', notes=display_notes(username), user=username, email=app_get_email(username))
+	return render_template('notes.html', notes='', user=username, email=app_get_email(username))
 
 def show_feedback_page(username):
 	return render_template('feedback.html', user=username, email=app_get_email(username))

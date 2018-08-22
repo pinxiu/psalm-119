@@ -1,8 +1,21 @@
-users_file = 'users.json'
-status_file = "status.json"
-notes_file = "notes.json"
-flashcards_file = "flash.json"
-feedback_file = "feedback.json"
+def app_get_css_string():
+	return css_string
+def app_get_header_string():
+	return header_string
+def app_get_top_nav(section, username, email):
+	return topnav(section, username, email)
+def app_initialize_progress():
+	return make_status()
+
+app_users_file = 'users.json'
+app_status_file = "status.json"
+app_notes_file = "notes.json"
+app_flashcards_file = "flash.json"
+app_feedback_file = "feedback.json"
+
+#############################
+# internal helper functions #
+#############################
 
 css_string = """
 <style>
@@ -223,21 +236,21 @@ header_string = """
 </head>
 			 	"""
 
-def top_nav(section, username):
+sections = {'':'Reading', 'notes':'Notes', 'progress':'Progress', 'flashcards':'Flashcards', \
+'quiz':'Quiz', 'help':'Help', 'feedback':'Feedback'}
+
+def top_nav(section, username, email):
 	html_str = """
 <div class="topnav">
 			   """
-	for addr in ['/', 'notes', 'progress', 'flashcards', 'quiz', 'help', 'feedback']:
-		
-			   """
-  <a href="/"""+username+"""">Reading</a>
-  <a href="/notes/"""+username+"""">Notes</a>
-  <a href="/progress/"""+username+"""">Progress</a>
-  <a href="/flashcards/"""+username+"""">Flashcards</a>
-  <a href="/quiz/"""+username+"""">Quiz</a>
-  <a href="/help/"""+username+"""">Help</a>
-  <a href="/feedback/"""+username+"""">Feedback</a>"""
-
+	for addr in sections:
+		if addr == section:
+			active_attribute = 'class="active" '
+		else:
+			active_attribute = ''
+		html_str += """
+  <a """+active_attribute+"href='/"+section+"/"+username+"'>"+sections[addr]+"""</a>
+			   		"""
 	html_str += """
   <input style="margin:0;float:right;" type="button" onclick="document.getElementById('login').style.display='block'" value='"""+username+"""'>
 				"""
@@ -245,8 +258,8 @@ def top_nav(section, username):
 	html_str += """
 </div>
 				"""
-
-	html_str += """
+	if username:
+		html_str += """
 
 <div id="login" class="modal">
 
@@ -257,12 +270,80 @@ def top_nav(section, username):
 class="close" title="Close Modal">Close</span>
 	  <div class="form">
 		<form class="logout-form" action="/logout">
-		  <p style="text-align:left;"><b>Email: </b>"""+get_email(username)+"""</p>
+		  <p style="text-align:left;"><b>Email: </b>"""+email+"""</p>
 		  <button>Log Out</button>
 		</form>
 	  </div>
 	</div>
   </div>
 </div>
-				"""
+					"""
+	else:
+		html_str += """
+<div id="login" class="modal">
+  <!-- Modal Content -->
+  <div class="animate">
+    <div class="login-page">
+      <span onclick="document.getElementById('login').style.display='none'" 
+class="close" title="Close Modal">Close</span>
+      <div class="form">
+        <form class="register-form" action="/register">
+          <input type="text" name="reguname" placeholder="username"/>
+          <input type="password" name="regpsw" placeholder="password"/>
+          <input type="email" name="regemail" placeholder="email address"/>
+          <button>Register</button>
+          <p class="message">Already registered? <a id="a3" href="#">Log In</a></p>
+        </form>
+        <form class="reset-form" action="/reset">
+          <input type="text" name="resuname" placeholder="username"/>
+          <input type="email" name="resemail" placeholder="email address"/>
+          <input type="password" name="respsw" placeholder="new password"/>
+          <button>Reset Password</button>
+          <p class="message">Try again? <a id="a4" href="#">Log In</a></p>
+        </form>
+        <form class="login-form" action="/login">
+          <input type="text" name="loguname" placeholder="username"/>
+          <input type="password" name="logpsw" placeholder="password"/>
+          <button>Log In</button>
+          <p class="message">Not registered? <a id="a1" href="#">Create an account</a></p>
+          <p class="message">Forgot password? <a id="a2" href="#">Reset password</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script type="text/javascript">
+$('#a1').click(function(){
+   $('.login-form').hide();
+   $('.reset-form').hide();
+   $('.register-form').show();
+});
+$('#a2').click(function(){
+   $('.login-form').hide();
+   $('.reset-form').show();
+   $('.register-form').hide();
+});
+$('#a3').click(function(){
+   $('.login-form').show();
+   $('.reset-form').hide();
+   $('.register-form').hide();
+});
+$('#a4').click(function(){
+   $('.login-form').show();
+   $('.reset-form').hide();
+   $('.register-form').hide();
+});
+</script>
+					"""
+	return html_str
+
+def make_status():
+	inventory = dict()
+	for book in data:
+		inventory[book] = dict()
+		for chapter in data[book]:
+			inventory[book][chapter] = dict()
+			for verse in data[book][chapter]:
+				inventory[book][chapter][verse] = False
+	return inventory

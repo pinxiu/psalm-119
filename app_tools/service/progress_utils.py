@@ -1,40 +1,37 @@
-def app_initialize_progress():
-	return make_status()
-def app_get_progress(username):
-	return get_progress(username)
-def app_update_progress(username, status):
-	return update_progress(username, status)
+def app_update_progress(username, reference):
+	return update_progress(username, reference)
+def app_display_progress(username):
+	return display_progress(username)
 
 #############################
 # internal helper functions #
 #############################
 
+from app_tools.general.book_utils import app_check_passage
 from app_tools.general.io_utils import app_upload, app_download
-from app_tools.static.constants import status_file, css_string
-from app_tools.static.resources import data
+from app_tools.general.user_utils import app_get_email
+from app_tools.static.constants import app_status_file, app_get_header_string, \
+app_initialize_progress, app_get_top_nav
+from app_tools.static.resources import app_esv_content, app_book_order
 
 def get_progress(username):
 	status_dir = username + '/' + status_file
-	status = app_download(status_dir, make_status())
+	status = app_download(status_dir, app_initialize_progress())
 	return status
 
-def update_progress(username, status):
+def upload_progress(username, status):
 	status_dir = username + '/' + status_file
 	status = app_upload(status_dir, status)
 
-def make_status():
-	inventory = dict()
-	for book in data:
-		inventory[book] = dict()
-		for chapter in data[book]:
-			inventory[book][chapter] = dict()
-			for verse in data[book][chapter]:
-				inventory[book][chapter][verse] = False
-	return inventory
+def update_progress(username, reference):
+	status = get_progress(username)
+	app_check_passage(status, reference)
+	upload_progress(username, status)
 
 def display_progress(username):
 	status = get_progress(username)
-	html_str = header_string
+	html_str = app_get_header_string()
+	html_str += app_get_top_nav('progress', username, app_get_email(username))
 	html_str += """
 <body>
 

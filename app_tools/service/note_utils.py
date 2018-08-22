@@ -1,11 +1,14 @@
 def app_submit_note(reference, note):
 	return submit_note(reference, note)
 
+def app_display_notes(username):
+	return display_notes(username)
+
 #############################
 # internal helper functions #
 #############################
 
-from app_tools.static.constants import notes_file
+from app_tools.static.constants import app_notes_file
 from app_tools.general.io_utils import app_upload, app_download
 
 def get_notes(username):

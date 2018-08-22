@@ -1,14 +1,14 @@
-def app_check_passage(reference):
-	return check_passage(reference)
+def app_check_passage(status, reference):
+	return check_passage(status, reference)
+
+def app_display_reference(reference):
+	return display_reference(reference)
 
 def app_find_passage(reference, showVerseNumber=False):
 	return find_passage(reference, showVerseNumber)
 
 def app_parse_reference(reference):
 	return parse_reference(reference)
-
-def app_display_reference(reference):
-	return display_reference(reference)
 
 def app_sort_references(references, flatten=True):
 	return sort_references(references, flatten)
@@ -17,8 +17,8 @@ def app_sort_references(references, flatten=True):
 # internal helper functions #
 #############################
 
-from app_tools.service.progress_utils import app_get_progress, app_update_progress
-from app_tools.static.resources import *
+from app_tools.static.resources import app_esv_content, app_book_index, \
+app_book_order, app_book_shorthand
 
 import re
 
@@ -53,8 +53,7 @@ def check_book(status, book, chapter1=None, verse1=None, chapter2=None, verse2=N
 		check_chapter(status, book, chapter2, end=verse2)
 	return status
 
-def check_passage(reference):
-	status = app_get_progress(username)
+def check_passage(status, reference):
 	book1, chapter1, verse1, book2, chapter2, verse2 = parse_reference(reference)
 	if book2:
 		if book1 == book2:
@@ -66,7 +65,6 @@ def check_passage(reference):
 			check_book(status, book2, chapter2=chapter2, verse2=verse2)
 	else:
 		check_book(status, book1, chapter1, verse1, chapter1, verse1)
-	app_update_progress(username , status)
 
 # finding passage
 

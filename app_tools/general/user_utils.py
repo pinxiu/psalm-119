@@ -1,31 +1,31 @@
+def app_auth_user(username):
+	return auth_user(username)
+
+def app_get_all_info():
+	return get_all_info()
+
+def app_get_email(username):
+	return get_email(username)
+
+def app_login_user(username, password):
+	return login_user(username, password)
+
 def app_register_user(username, password, email):
 	return register_user(username, password, email)
 
 def app_reset_user(username, password, email):
 	return reset_user(username, password, email)
 
-def app_login_user(username, password):
-	return login_user(username, password)
-
-def app_auth_user(username):
-	return auth_user(username)
-
-def app_get_email(username):
-	return get_email(username)
-
-def app_get_all_info():
-	return get_all_info()
-
-
 #############################
 # internal helper functions #
 #############################
 
-from app_tools.general.io_utils import app_upload, app_download, app_initialize_user, app_get_user_info
-from app_tools.static.constants import users_file
+from app_tools.general.io_utils import app_upload, app_download, app_initialize_user, \
+app_get_user_info, app_json_dump
+from app_tools.static.constants import app_users_file
 from werkzeug.exceptions import BadRequest, Unauthorized
+
 import hashlib
-import json
 
 def get_users():
 	users = app_download(users_file)
@@ -90,5 +90,5 @@ def get_all_info():
 		if user[0] == '.':
 			continue
 		result[user].update(app_get_user_info(user))
-	return json.dumps(result)
+	return app_json_dump(result)
 
