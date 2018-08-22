@@ -1,3 +1,12 @@
+import signal
+import subprocess
+
+def handler_stop_signals(signum, frame):
+    subprocess.call(['./push'])
+
+signal.signal(signal.SIGINT, handler_stop_signals)
+signal.signal(signal.SIGTERM, handler_stop_signals)
+
 from app_tools.general.book_utils import app_find_passage, app_display_reference
 from app_tools.general.display_utils import *
 from app_tools.general.user_utils import app_get_all_info, app_auth_user, \
