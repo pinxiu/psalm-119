@@ -7,7 +7,7 @@ def app_store_flashcard(reference, username):
 
 from app_tools.general.book_utils import app_find_passage, app_sort_references
 from app_tools.general.io_utils import app_upload, app_download
-from app_tools.static.constants import flashcards_file
+from app_tools.static.constants import app_flashcards_file
 
 def get_flashcards(username):
 	flash_dir = username + '/' + flashcards_file

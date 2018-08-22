@@ -12,7 +12,7 @@ from app_tools.general.io_utils import app_upload, app_download
 from app_tools.general.user_utils import app_get_email
 from app_tools.static.constants import app_status_file, app_get_header_string, \
 app_initialize_progress, app_get_top_nav
-from app_tools.static.resources import app_esv_content, app_book_order
+from app_tools.static.resources import app_book_order
 
 def get_progress(username):
 	status_dir = username + '/' + status_file
