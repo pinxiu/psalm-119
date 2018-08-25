@@ -1,11 +1,39 @@
 import signal
-import subprocess
+
+import boto
+from boto.s3.key import Key
+keyId = "your_aws_key_id"
+sKeyId="your_aws_secret_key_id"
+#Connect to S3 with access credentials 
+conn = boto.connect_s3(keyId,sKeyId) 
+#Create the bucket in a specific region.
+bucket = conn.create_bucket('mybucket001',location='us-west-2')
 
 def handler_stop_signals(signum, frame):
-    subprocess.call(['./push'])
+    fileName="abcd.txt"
+	bucketName="mybucket001"
+	file = open(fileName)
+	bucket = conn.get_bucket(bucketName)
+	#Get the Key object of the bucket
+	k = Key(bucket)
+	#Crete a new key with id as the name of the file
+	k.key=fileName
+	#Upload the file
+	result = k.set_contents_from_file(file)
+	#result contains the size of the file uploaded
 
 signal.signal(signal.SIGINT, handler_stop_signals)
 signal.signal(signal.SIGTERM, handler_stop_signals)
+
+srcFileName="abc.txt"
+destFileName="s3_abc.txt"
+bucketName="mybucket001"
+conn = boto.connect_s3(keyId,sKeyId)
+bucket = conn.get_bucket(bucketName)
+#Get the Key object of the given key, in the bucket
+k = Key(bucket,srcFileName)
+#Get the contents of the key into a file 
+k.get_contents_to_filename(destFileName)
 
 from app_tools.general.book_utils import app_find_passage, app_display_reference
 from app_tools.general.display_utils import *
